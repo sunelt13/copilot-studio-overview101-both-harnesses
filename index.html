@@ -486,6 +486,13 @@ html[data-theme="dark"] .theme-btn .icon-moon { display: none; }
   .progress, .controls, .notes, .corner-logo, .audience-switch, .help-btn, .overview, .scroll-hint { display: none; }
 }
 </style>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "y4d51htp9r");
+</script>
 </head>
 <body>
 <div class="corner-logo">
@@ -1441,6 +1448,9 @@ function showSlide(n) {
   slides[currentSlide].classList.remove('active');
   currentSlide = n;
   slides[currentSlide].classList.add('active');
+
+  // Track slide view in Clarity
+  if (window.clarity) { clarity('event', 'slide_view', { slide: currentSlide + 1, total: totalSlides }); }
 
   progressFill.style.transform = 'scaleX(' + ((currentSlide + 1) / totalSlides) + ')';
   slideCounter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
