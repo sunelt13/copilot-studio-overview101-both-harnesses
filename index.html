@@ -4,11 +4,17 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Copilot Studio: Standard &amp; GitHub Copilot Harnesses — Presentation</title>
+<title>Copilot Studio: Standard &amp; GitHub Copilot Harnesses - Presentation</title>
 <script>
   (() => {
-    const param = new URLSearchParams(window.location.search).get("scoutTheme");
-    const theme = param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const params = new URLSearchParams(window.location.search);
+    let theme = params.get("theme") || params.get("scoutTheme");
+    if (theme !== "light" && theme !== "dark") {
+      try { theme = localStorage.getItem("cpTheme"); } catch (e) { theme = null; }
+    }
+    if (theme !== "light" && theme !== "dark") {
+      theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
     document.documentElement.setAttribute("data-theme", theme);
   })();
 </script>
@@ -80,7 +86,7 @@ body {
   padding: 60px 100px;
   background: var(--cp-slide-bg);
   opacity: 0; pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .slide.active { opacity: 1; pointer-events: auto; }
 .slide__content { max-width: 960px; width: 100%; text-align: left; }
@@ -106,9 +112,9 @@ body {
 .slide--title::before { opacity: 0; }
 .slide--title .slide__content { text-align: center; }
 .slide--title h1 { font-size: 54px; color: #fff; -webkit-text-fill-color: #fff; background: none; }
-.slide--title .subtitle { color: rgba(255,255,255,0.55); }
+.slide--title .subtitle { color: rgba(255,255,255,0.78); }
 .slide--title .logo { margin-bottom: 40px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-.slide--title .logo span { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.45); letter-spacing: 1.5px; text-transform: uppercase; }
+.slide--title .logo span { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.68); letter-spacing: 1.5px; text-transform: uppercase; }
 
 .slide--section { text-align: center; }
 .slide--section::before { opacity: 0; }
@@ -182,16 +188,15 @@ body {
 .poll-option__desc { font-size: 12px; color: var(--cp-text-muted); }
 
 .slide-callout {
-  margin: 14px 0; padding: 12px 16px;
-  background: var(--cp-accent-soft); border-left: 3px solid var(--cp-accent);
-  border-radius: 4px; font-size: 14px; color: var(--cp-text); line-height: 1.5;
+  margin: 14px 0; padding: 13px 16px;
+  background: var(--cp-accent-soft); border: 1px solid var(--cp-accent);
+  border-radius: 8px; font-size: 14px; color: var(--cp-text); line-height: 1.5;
 }
 .slide-callout strong { color: var(--cp-accent); }
 
 .example {
   margin: 12px 0; padding: 14px 16px;
-  background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 6px;
-  box-shadow: inset 3px 0 0 var(--cp-accent-glow);
+  background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 8px;
 }
 .example__label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--cp-accent); letter-spacing: 0.5px; margin-bottom: 5px; }
 .example p { font-size: 14px; margin-bottom: 0; color: var(--cp-text); line-height: 1.5; }
@@ -299,10 +304,10 @@ body {
 }
 
 .progress { position: fixed; bottom: 0; left: 0; right: 0; height: 3px; background: var(--cp-border); z-index: 100; }
-.progress__fill { height: 100%; background: var(--cp-accent); transition: width 0.3s ease; }
-.controls { position: fixed; bottom: 14px; right: 24px; display: flex; align-items: center; gap: 12px; z-index: 100; font-size: 12px; color: var(--cp-text-soft); }
+.progress__fill { height: 100%; width: 100%; background: var(--cp-accent); transform: scaleX(0); transform-origin: left center; transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+.controls { position: fixed; bottom: 14px; right: 24px; display: flex; align-items: center; gap: 12px; z-index: 100; font-size: 12px; color: var(--cp-text-muted); }
 .controls__counter { font-weight: 600; font-variant-numeric: tabular-nums; }
-.controls__hint { opacity: 0.45; font-size: 11px; }
+.controls__hint { font-size: 11px; }
 .notes { position: fixed; bottom: 36px; left: 24px; right: 24px; padding: 12px 16px; background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 6px; font-size: 13px; color: var(--cp-text-muted); line-height: 1.5; display: none; z-index: 100; max-height: 88px; overflow-y: auto; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); }
 .notes.visible { display: block; }
 .notes__label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--cp-accent); margin-bottom: 3px; letter-spacing: 0.5px; }
@@ -316,7 +321,7 @@ body {
   background: var(--cp-surface); border: 1px solid var(--cp-border);
   display: flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 700; color: var(--cp-text-soft);
-  opacity: 0.25; cursor: default; transition: opacity 0.2s;
+  opacity: 0.45; cursor: default; transition: opacity 0.2s;
   box-shadow: var(--cp-card-shadow);
 }
 .help-btn:hover { opacity: 1; }
@@ -337,7 +342,134 @@ body {
   font-family: inherit; font-size: 11px; font-weight: 600; color: var(--cp-text);
 }
 
+/* Audience switcher */
+.audience-switch {
+  position: fixed; top: 14px; right: 20px; z-index: 120;
+  display: flex; align-items: center; gap: 8px;
+}
+.audience-switch__label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--cp-text-soft); opacity: 0.7;
+}
+.audience-switch__group {
+  display: flex; padding: 3px; gap: 2px;
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 999px; box-shadow: var(--cp-card-shadow);
+}
+.audience-btn {
+  appearance: none; border: 0; cursor: pointer;
+  padding: 6px 14px; border-radius: 999px;
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  color: var(--cp-text-muted); background: transparent;
+  transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+.audience-btn:hover { color: var(--cp-text); background: var(--cp-surface-soft); }
+.audience-btn[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); }
+.audience-btn[aria-pressed="true"]:hover { background: var(--cp-accent-hover); color: var(--cp-accent-fg); }
+.theme-btn {
+  appearance: none; cursor: pointer;
+  width: 34px; height: 34px; border-radius: 999px;
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--cp-card-shadow);
+  transition: color 0.18s, border-color 0.18s;
+}
+.theme-btn:hover { color: var(--cp-accent); border-color: var(--cp-accent); }
+.theme-btn svg { width: 16px; height: 16px; display: block; }
+.theme-btn .icon-sun { display: none; }
+html[data-theme="dark"] .theme-btn .icon-sun { display: block; }
+html[data-theme="dark"] .theme-btn .icon-moon { display: none; }
+.slide--title .audience-switch__label { color: rgba(255,255,255,0.5); }
+
+/* Scenario grid slide */
+.scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+.scenario-card {
+  padding: 16px 18px; background: var(--cp-surface);
+  border: 1px solid var(--cp-border); border-radius: 10px;
+  box-shadow: var(--cp-card-shadow); text-align: left;
+  display: flex; flex-direction: column; gap: 6px;
+  border-top: 3px solid var(--cp-accent);
+}
+.scenario-card__icon { font-size: 26px; line-height: 1; }
+.scenario-card__title { font-size: 15px; font-weight: 700; color: var(--cp-text); }
+.scenario-card__desc { font-size: 12.5px; color: var(--cp-text-muted); line-height: 1.45; flex: 1; }
+.scenario-card__harness {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase;
+  color: var(--cp-accent); padding-top: 4px; border-top: 1px solid var(--cp-border);
+}
+
+/* Slide overview */
+.overview {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--cp-bg); padding: 56px 40px 40px;
+  overflow-y: auto; display: none;
+}
+.overview.visible { display: block; }
+.overview__header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 20px; max-width: 1200px; margin-left: auto; margin-right: auto;
+}
+.overview__header h3 { font-size: 18px; font-weight: 700; color: var(--cp-text); }
+.overview__hint { font-size: 12px; color: var(--cp-text-muted); }
+.overview__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px;
+  max-width: 1200px; margin: 0 auto;
+}
+.overview__item {
+  appearance: none; cursor: pointer; text-align: left; font-family: inherit;
+  padding: 14px 16px; background: var(--cp-surface);
+  border: 1px solid var(--cp-border); border-radius: 8px;
+  box-shadow: var(--cp-card-shadow); min-height: 92px;
+  display: flex; flex-direction: column; gap: 6px;
+  transition: border-color 0.18s, transform 0.18s;
+}
+.overview__item:hover { border-color: var(--cp-accent); transform: translateY(-2px); }
+.overview__item.current { border-color: var(--cp-accent); box-shadow: 0 0 0 1px var(--cp-accent), var(--cp-card-shadow); }
+.overview__item-num { font-size: 10px; font-weight: 700; color: var(--cp-accent); letter-spacing: 0.5px; }
+.overview__item-title { font-size: 13px; font-weight: 600; color: var(--cp-text); line-height: 1.35; }
+
+/* Nav buttons */
+.controls__nav { display: flex; gap: 4px; }
+.nav-btn {
+  appearance: none; cursor: pointer;
+  width: 26px; height: 26px; border-radius: 6px;
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  color: var(--cp-text-muted); font-size: 13px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.18s, color 0.18s;
+}
+.nav-btn:hover:not(:disabled) { border-color: var(--cp-accent); color: var(--cp-accent); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+.progress { cursor: pointer; }
+
+/* Scroll hint */
+.scroll-hint {
+  position: fixed; bottom: 46px; left: 50%; transform: translateX(-50%);
+  z-index: 99; font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
+  color: rgba(255,255,255,0.62); display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;
+  transition: opacity 0.4s;
+}
+.scroll-hint.hidden { opacity: 0; }
+.scroll-hint__chev { font-size: 16px; animation: hintDrift 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+@keyframes hintDrift {
+  0% { opacity: 0; transform: translateY(-3px); }
+  35%, 55% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint__chev { animation: none; }
+  .slide { transition: opacity 0.01ms; }
+  .progress__fill { transition: none; }
+}
+
 @media (max-width: 768px) {
+  .audience-switch { top: 10px; right: 10px; left: 10px; justify-content: center; }
+  .audience-switch__label { display: none; }
+  .audience-btn { padding: 5px 10px; font-size: 11px; }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .corner-logo { display: none; }
   .slide { padding: 32px 24px; }
   .slide h1 { font-size: 32px; }
   .slide h2 { font-size: 26px; }
@@ -351,7 +483,7 @@ body {
 }
 @media print {
   .slide { position: relative; opacity: 1; pointer-events: auto; page-break-after: always; height: auto; min-height: 100vh; }
-  .progress, .controls, .notes, .corner-logo { display: none; }
+  .progress, .controls, .notes, .corner-logo, .audience-switch, .help-btn, .overview, .scroll-hint { display: none; }
 }
 </style>
 </head>
@@ -360,20 +492,32 @@ body {
 <svg height="16" viewbox="0 0 23 23" width="16"><path d="M0 0h11v11H0z" fill="#F25022"></path><path d="M12 0h11v11H12z" fill="#7FBA00"></path><path d="M0 12h11v11H0z" fill="#00A4EF"></path><path d="M12 12h11v11H12z" fill="#FFB900"></path></svg>
 <span>Microsoft</span>
 </div>
+<div aria-label="Audience" class="audience-switch" role="group">
+<span class="audience-switch__label">Audience</span>
+<div class="audience-switch__group">
+<button aria-pressed="true" class="audience-btn" data-audience="provider" type="button">Provider</button>
+<button aria-pressed="false" class="audience-btn" data-audience="payer" type="button">Payer</button>
+<button aria-pressed="false" class="audience-btn" data-audience="medtech" type="button">MedTech &amp; Pharma</button>
+</div>
+<button aria-label="Toggle theme" class="theme-btn" id="themeBtn" type="button">
+<svg aria-hidden="true" class="icon-moon" fill="currentColor" viewbox="0 0 16 16"><path d="M13.5 9.7A5.6 5.6 0 0 1 6.3 2.5a.6.6 0 0 0-.8-.7 6.8 6.8 0 1 0 8.7 8.7.6.6 0 0 0-.7-.8z"></path></svg>
+<svg aria-hidden="true" class="icon-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" viewbox="0 0 16 16"><circle cx="8" cy="8" r="3.2"></circle><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3.1 3.1l1.1 1.1M11.8 11.8l1.1 1.1M12.9 3.1l-1.1 1.1M4.2 11.8l-1.1 1.1"></path></svg>
+</button>
+</div>
 <div class="deck">
 <!-- SLIDE 1: Title -->
-<div class="slide slide--title active" data-notes="Welcome everyone. Today we are covering Microsoft Copilot Studio and its two primary agent architectures — the standard harness and the GitHub Copilot harness. We will walk through how each works, when to use which, and ground every example in healthcare scenarios you will recognise from your own operations.">
+<div class="slide slide--title active" data-notes="Welcome everyone. Today we are covering Microsoft Copilot Studio and its two primary agent architectures - the standard harness and the GitHub Copilot harness. We will walk through how each works, when to use which, and ground every example in healthcare scenarios you will recognise from your own operations.">
 <div class="slide__content">
 <div class="logo">
 <svg height="28" viewbox="0 0 23 23" width="28"><path d="M0 0h11v11H0z" fill="#F25022"></path><path d="M12 0h11v11H12z" fill="#7FBA00"></path><path d="M0 12h11v11H0z" fill="#00A4EF"></path><path d="M12 12h11v11H12z" fill="#FFB900"></path></svg>
 <span>Microsoft Copilot Studio</span>
 </div>
 <h1>Building Agents for Healthcare</h1>
-<p class="subtitle">Standard &amp; GitHub Copilot harnesses — two architectures, one platform</p>
+<p class="subtitle">Standard &amp; GitHub Copilot harnesses - two architectures, one platform</p>
 </div>
 </div>
 <!-- SLIDE 2: What Are Agents? -->
-<div class="slide" data-notes="An agent is NOT a generic chatbot. In healthcare, it is a purpose-built AI assistant grounded in YOUR clinical protocols, payer policies, and operational data. It can take real actions — submit a prior auth, route a referral, update a patient record. And it is low-code, so clinical informaticists and ops teams can build without engineering support.">
+<div class="slide" data-notes-key="n2" data-notes="An agent is NOT a generic chatbot. It is a purpose-built AI assistant grounded in YOUR documentation and operational data, and it can take real actions.">
 <div class="slide__content">
 <h2>What Are Agents?</h2>
 <p>An <strong>agent</strong> is a specialised AI assistant designed for specific tasks in your organisation.</p>
@@ -381,49 +525,49 @@ body {
 <div class="card">
 <div class="card__icon">📚</div>
 <h4>Knows Your Data</h4>
-<p>Clinical protocols, formularies, payer policies — grounded in your organisation's actual information, not generic web knowledge</p>
+<p data-swap="s2.knows"></p>
 </div>
 <div class="card">
 <div class="card__icon">⚡</div>
 <h4>Takes Action</h4>
-<p>Submits prior authorisations, routes referrals, updates patient records — real work, not just answers</p>
+<p data-swap="s2.acts"></p>
 </div>
 <div class="card">
 <div class="card__icon">🧠</div>
 <h4>Maintains Context</h4>
-<p>Remembers the conversation across turns — critical during complex patient intake or multi-step claims resolution</p>
+<p data-swap="s2.context"></p>
 </div>
 <div class="card">
 <div class="card__icon">🔧</div>
 <h4>Low-Code</h4>
-<p>Drag-and-drop — clinical informaticists and operations teams can build and deploy without engineering</p>
+<p data-swap="s2.lowcode"></p>
 </div>
 </div>
 </div>
 </div>
 <!-- SLIDE 3: LLMs & RAG -->
-<div class="slide" data-notes="Two foundational concepts. LLMs are the brain — they predict language one token at a time. But they only know their training data. RAG fixes that by letting the agent look things up FIRST — pulling from your formulary database, clinical guidelines, or payer policy library — before composing an answer. The result is an answer grounded in YOUR data, with citations.">
+<div class="slide" data-notes="Two foundational concepts. LLMs are the brain - they predict language one token at a time. But they only know their training data. RAG fixes that by letting the agent look things up FIRST - pulling from your formulary database, clinical guidelines, or payer policy library - before composing an answer. The result is an answer grounded in YOUR data, with citations.">
 <div class="slide__content">
 <h2>The AI Foundation: LLMs &amp; RAG</h2>
 <p>Two concepts that power every agent.</p>
 <h3 style="margin-top:20px;">Large Language Models (LLMs)</h3>
 <ul>
-<li><strong>Prediction engine</strong> — Trained on massive text; predicts the next best token (word fragment)</li>
-<li><strong>Context window</strong> — How much the model can "hold in mind" at once</li>
-<li><strong>Instructions matter</strong> — Clear prompts steer better responses than clever phrasing</li>
+<li><strong>Prediction engine</strong> - Trained on massive text; predicts the next best token (word fragment)</li>
+<li><strong>Context window</strong> - How much the model can "hold in mind" at once</li>
+<li><strong>Instructions matter</strong> - Clear prompts steer better responses than clever phrasing</li>
 </ul>
 <h3 style="margin-top:18px;">Retrieval-Augmented Generation (RAG)</h3>
 <div class="flow">
 <div class="flow__step">
 <div class="flow__step-num">Ask</div>
 <div class="flow__step-label">User query</div>
-<div class="flow__step-desc">"Formulary status of Drug X?"</div>
+<div class="flow__step-desc" data-swap="s3.ask"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">Retrieve</div>
 <div class="flow__step-label">Knowledge lookup</div>
-<div class="flow__step-desc">Searches payer formulary DB</div>
+<div class="flow__step-desc" data-swap="s3.retrieve"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
@@ -439,14 +583,14 @@ body {
 </div>
 </div>
 <div class="slide-callout">
-<strong>Key distinction:</strong> Knowledge informs answers (read-only). Tools take actions (write). Keep these separate — it saves grief later.
+<strong>Key distinction:</strong> Knowledge informs answers (read-only). Tools take actions (write). Keep these separate - it saves grief later.
       </div>
 </div>
 </div>
 <!-- SLIDE 4: Where Copilot Studio Fits -->
-<div class="slide" data-notes="Not every agent needs the same build surface. Agent Builder is for quick, no-code Q and A in M365 — think a clinical team that just wants a protocol FAQ. Copilot Studio is the sweet spot for healthcare — low-code agents with connectors to your claims systems, EHR middleware, Dataverse, and workflows. Foundry is pro-code, for when you need custom orchestration, your own model stack, or an Azure data boundary for PHI."><div class="slide__content" style="max-width:1080px;">
+<div class="slide" data-notes="Not every agent needs the same build surface. Agent Builder is for quick, no-code Q and A in M365 - think a clinical team that just wants a protocol FAQ. Copilot Studio is the sweet spot for healthcare - low-code agents with connectors to your claims systems, EHR middleware, Dataverse, and workflows. Foundry is pro-code, for when you need custom orchestration, your own model stack, or an Azure data boundary for PHI."><div class="slide__content" style="max-width:1080px;">
 <h2>Where Copilot Studio Fits</h2>
-<p>Three build surfaces — and <strong>Copilot Studio is the recommended enterprise choice</strong> for healthcare agents that must connect, act, and scale.</p>
+<p>Three build surfaces - and <strong>Copilot Studio is the recommended enterprise choice</strong> for healthcare agents that must connect, act, and scale.</p>
 <div class="fit-grid">
 <div class="card fit-card">
 <div class="fit-card__tag">Quick Knowledge Agents</div>
@@ -456,7 +600,7 @@ body {
 <ul>
 <li><strong>No-code</strong> experience built directly in M365 Copilot</li>
 <li><strong>Limited to Q&amp;A</strong> and lightweight knowledge-grounded assistance</li>
-<li><strong>Limited actions via M365 plugins</strong> — no custom connectors, workflows, or enterprise ALM</li>
+<li><strong>Limited actions via M365 plugins</strong> - no custom connectors, workflows, or enterprise ALM</li>
 <li><strong>Governed via the M365 admin center</strong></li>
 <li><strong>Fast for individuals and small teams</strong> looking for quick wins</li>
 </ul>
@@ -468,11 +612,11 @@ body {
 <p>The low-code platform that covers most healthcare operational, service, and employee scenarios.</p>
 <ul>
 <li><strong>Low-code platform</strong> with enterprise maker controls</li>
-<li><strong>1,000+ connectors</strong> for Epic-adjacent systems, claims tools, CRMs, and more</li>
+<li data-swap="s4.connectors"></li>
 <li><strong>Workflows, skills, and tools</strong> for real-world actions and orchestration</li>
 <li><strong>Multi-channel publishing</strong> across internal and external experiences</li>
 <li><strong>ALM and governance</strong> through the Power Platform admin center</li>
-<li><strong>Enterprise-grade</strong> for prior auth, claims, and care coordination</li>
+<li data-swap="s4.enterprise"></li>
 </ul>
 </div>
 <div class="card fit-card">
@@ -491,7 +635,7 @@ body {
 </div>
 </div></div>
 <!-- SLIDE 5: The Three Harnesses -->
-<div class="slide--section slide" data-notes="Once you choose Copilot Studio, you pick a harness — the runtime environment around the model. Each harness determines what capabilities are available, how the model reasons, and how actions are executed. Three options. Let me walk you through the comparison, then we will go deeper on Standard and GitHub Copilot."><div class="slide__content" style="max-width:1080px;">
+<div class="slide--section slide" data-notes="Once you choose Copilot Studio, you pick a harness - the runtime environment around the model. Each harness determines what capabilities are available, how the model reasons, and how actions are executed. Three options. Let me walk you through the comparison, then we will go deeper on Standard and GitHub Copilot."><div class="slide__content" style="max-width:1080px;">
 <h2>The Three Harnesses</h2>
 <p style="font-size:18px; color:var(--cp-text-muted); margin-bottom:20px;">A <strong>harness</strong> is the runtime environment around the model. It determines capabilities, orchestration, and execution.</p>
 <div class="harness-grid">
@@ -502,7 +646,7 @@ body {
 <div class="metric-list">
 <div class="metric"><div class="metric__label">Best for</div><div class="metric__value">Extending M365 Copilot Chat with enterprise knowledge</div></div>
 <div class="metric"><div class="metric__label">How it works</div><div class="metric__value">Connects enterprise knowledge to M365 Copilot Chat</div></div>
-<div class="metric"><div class="metric__label">Healthcare example</div><div class="metric__value">Compliance and clinical guideline Q&amp;A for staff</div></div>
+<div class="metric"><div class="metric__label">Example</div><div class="metric__value" data-swap="s5.chat"></div></div>
 <div class="metric"><div class="metric__label">Publishing</div><div class="metric__value">Internal teams</div></div>
 </div>
 </div>
@@ -513,7 +657,7 @@ body {
 <div class="metric-list">
 <div class="metric"><div class="metric__label">Best for</div><div class="metric__value">Structured conversations and rule-based agents</div></div>
 <div class="metric"><div class="metric__label">How it works</div><div class="metric__value">Follows topics and rules you define</div></div>
-<div class="metric"><div class="metric__label">Healthcare example</div><div class="metric__value">Patient billing inquiry with structured paths</div></div>
+<div class="metric"><div class="metric__label">Example</div><div class="metric__value" data-swap="s5.standard"></div></div>
 <div class="metric"><div class="metric__label">Publishing</div><div class="metric__value">Internal or external</div></div>
 </div>
 </div>
@@ -524,14 +668,14 @@ body {
 <div class="metric-list">
 <div class="metric"><div class="metric__label">Best for</div><div class="metric__value">Complex, multi-step reasoning and business processes</div></div>
 <div class="metric"><div class="metric__label">How it works</div><div class="metric__value">Reasons through a goal step by step and adjusts dynamically</div></div>
-<div class="metric"><div class="metric__label">Healthcare example</div><div class="metric__value">Prior auth: reads clinical docs, checks payer criteria, and routes exceptions</div></div>
+<div class="metric"><div class="metric__label">Example</div><div class="metric__value" data-swap="s5.github"></div></div>
 <div class="metric"><div class="metric__label">Publishing</div><div class="metric__value">Internal or external</div></div>
 </div>
 </div>
 </div>
 </div></div>
 <!-- SLIDE 6: Standard Harness Building Blocks -->
-<div class="slide" data-notes="The standard harness organises agent behaviour around four building blocks. Knowledge is your data sources — SharePoint sites with clinical protocols, formulary lists, HR policies. Tools are the actions the agent can perform — calling a claims API, sending a Teams alert, triggering a Power Automate flow for referral routing. Topics are the conversation entry points — the AI matches user intent to the right topic. And Instructions set the tone, rules, and boundaries.">
+<div class="slide" data-notes-key="n6" data-notes="The standard harness organises agent behaviour around four building blocks: Knowledge is your data sources, Tools are the actions the agent can perform, Topics are the conversation entry points matched by intent, and Instructions set the tone, rules, and boundaries.">
 <div class="slide__content">
 <h2>Standard Harness: Four Building Blocks</h2>
 <p>Every standard harness agent is assembled from:</p>
@@ -539,12 +683,12 @@ body {
 <div class="pillar">
 <div class="pillar__icon">📚</div>
 <div class="pillar__title">Knowledge</div>
-<div class="pillar__desc">Formularies, clinical protocols, payer policies</div>
+<div class="pillar__desc" data-swap="s6.knowledge"></div>
 </div>
 <div class="pillar">
 <div class="pillar__icon">🛠️</div>
 <div class="pillar__title">Tools</div>
-<div class="pillar__desc">Claims API, referral routing, record updates</div>
+<div class="pillar__desc" data-swap="s6.tools"></div>
 </div>
 <div class="pillar">
 <div class="pillar__icon">💬</div>
@@ -554,55 +698,55 @@ body {
 <div class="pillar">
 <div class="pillar__icon">📋</div>
 <div class="pillar__title">Instructions</div>
-<div class="pillar__desc">Tone, HIPAA boundaries, escalation rules</div>
+<div class="pillar__desc" data-swap="s6.instructions"></div>
 </div>
 </div>
 <div class="example" style="margin-top:20px;">
-<div class="example__label">Example: Patient Billing Agent</div>
-<p>Connected to claims SharePoint and billing Dataverse. Topic: "Check claim status." Instructions: "Professional tone. Never disclose PHI to unauthorised parties. Escalate after two failed lookups."</p>
+<div class="example__label" data-swap="s6.exampleLabel"></div>
+<p data-swap="s6.exampleBody"></p>
 </div>
 </div>
 </div>
 <!-- SLIDE 7: Standard Harness Orchestration -->
-<div class="slide" data-notes="Here is the standard harness orchestrator in action. The patient asks about their claim. The AI matches intent to the Check Claim Status topic. Instructions enforce a HIPAA-conscious tone. Knowledge queries the claims database. Tools call the claims API. And the response is delivered with next steps. The orchestrator coordinates all four building blocks — it can use classic or generative orchestration to select among topics.">
+<div class="slide" data-notes-key="n7" data-notes="Here is the standard harness orchestrator in action. The AI matches intent to a topic, instructions enforce tone and boundaries, knowledge queries your data, tools call the system of record, and the response is delivered with next steps.">
 <div class="slide__content">
 <h2>Standard Harness: Orchestration</h2>
 <p>The orchestrator coordinates all four building blocks:</p>
 <div class="flow">
 <div class="flow__step">
 <div class="flow__step-num">1</div>
-<div class="flow__step-label">Patient asks</div>
-<div class="flow__step-desc">"What's my claim status?"</div>
+<div class="flow__step-label">User asks</div>
+<div class="flow__step-desc" data-swap="s7.ask"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">2</div>
 <div class="flow__step-label">Topics</div>
-<div class="flow__step-desc">Matches "Check Claim"</div>
+<div class="flow__step-desc" data-swap="s7.topic"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">3</div>
 <div class="flow__step-label">Instructions</div>
-<div class="flow__step-desc">HIPAA-conscious tone</div>
+<div class="flow__step-desc" data-swap="s7.instructions"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">4</div>
 <div class="flow__step-label">Knowledge</div>
-<div class="flow__step-desc">Queries claims database</div>
+<div class="flow__step-desc" data-swap="s7.knowledge"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">5</div>
 <div class="flow__step-label">Tools</div>
-<div class="flow__step-desc">Calls claims API</div>
+<div class="flow__step-desc" data-swap="s7.tools"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">6</div>
 <div class="flow__step-label">Response</div>
-<div class="flow__step-desc">Status + next steps</div>
+<div class="flow__step-desc" data-swap="s7.response"></div>
 </div>
 </div>
 <div class="slide-callout" style="margin-top:20px;">
@@ -611,20 +755,20 @@ body {
 </div>
 </div>
 <!-- SLIDE 8: GitHub Copilot Harness Building Blocks -->
-<div class="slide" data-notes="Now the GitHub Copilot harness. This is designed for reasoning-heavy, multi-step work. Notice: no Topics tab. Instead, your primary steering wheel is Instructions — detailed natural-language guidance on who the agent is, what it should do, and its boundaries. Knowledge and Memory give the agent grounded context that persists across sessions. Tools and Skills let the agent take action and reuse structured behaviours. You choose the Model — including reasoning models for complex planning. Connected Agents let you delegate to specialists. And Workflows handle the deterministic steps.">
+<div class="slide" data-notes="Now the GitHub Copilot harness. This is designed for reasoning-heavy, multi-step work. Notice: no Topics tab. Instead, your primary steering wheel is Instructions - detailed natural-language guidance on who the agent is, what it should do, and its boundaries. Knowledge and Memory give the agent grounded context that persists across sessions. Tools and Skills let the agent take action and reuse structured behaviours. You choose the Model - including reasoning models for complex planning. Connected Agents let you delegate to specialists. And Workflows handle the deterministic steps.">
 <div class="slide__content">
 <h2>GitHub Copilot Harness: Building Blocks</h2>
-<p>Designed for reasoning-heavy, multi-step work. No Topics — <strong>instructions</strong> are your primary control.</p>
+<p>Designed for reasoning-heavy, multi-step work. No Topics - <strong>instructions</strong> are your primary control.</p>
 <div class="cards cards--3col" style="margin-top:16px;">
 <div class="card">
 <div class="card__icon">📋</div>
 <h4>Instructions</h4>
-<p>The agent's standing brief — identity, scope, tone, and boundaries. Your primary steering wheel.</p>
+<p>The agent's standing brief - identity, scope, tone, and boundaries. Your primary steering wheel.</p>
 </div>
 <div class="card">
 <div class="card__icon">📚</div>
 <h4>Knowledge &amp; Memory</h4>
-<p>Clinical guidelines, formularies, patient context — memory retains useful information across sessions.</p>
+<p data-swap="s8.knowledge"></p>
 </div>
 <div class="card">
 <div class="card__icon">🛠️</div>
@@ -634,59 +778,59 @@ body {
 <div class="card">
 <div class="card__icon">🧠</div>
 <h4>Model</h4>
-<p>Choose the right LLM — fast models for chat, reasoning models for complex clinical decision support.</p>
+<p data-swap="s8.model"></p>
 </div>
 <div class="card">
 <div class="card__icon">🤝</div>
 <h4>Connected Agents</h4>
-<p>Delegate to specialists — benefits verification, pharmacy, scheduling — compose a team, not a monolith.</p>
+<p data-swap="s8.connected"></p>
 </div>
 <div class="card">
 <div class="card__icon">🔄</div>
 <h4>Workflows</h4>
-<p>Deterministic steps that must run consistently — send the referral, trigger the approval, update the record.</p>
+<p data-swap="s8.workflows"></p>
 </div>
 </div>
 </div>
 </div>
 <!-- SLIDE 9: GitHub Copilot Harness Orchestration -->
-<div class="slide" data-notes="The GitHub Copilot harness runs a goal-driven agentic loop. You give it a goal and capabilities. It plans the work, acts, observes the result, and replans if needed. Here is a prior auth example. The goal is to process the request. The agent plans what clinical documentation it needs. It acts by retrieving patient records and checking payer criteria. It observes that lab results are missing. It replans — requests the missing documentation, then re-evaluates. This is fundamentally different from the standard harness where you would need to script every possible path.">
+<div class="slide" data-notes-key="n9" data-notes="The GitHub Copilot harness runs a goal-driven agentic loop. You give it a goal and capabilities. It plans the work, acts, observes the result, and replans if needed. This is fundamentally different from the standard harness where you would need to script every possible path.">
 <div class="slide__content">
 <h2>GitHub Copilot Harness: Orchestration</h2>
-<p>Goal-driven orchestration — the agent plans, acts, and adjusts dynamically.</p>
+<p>Goal-driven orchestration - the agent plans, acts, and adjusts dynamically.</p>
 <div class="flow" style="margin-top:20px;">
 <div class="flow__step" style="border-color:var(--cp-accent); background:var(--cp-accent-soft);">
 <div class="flow__step-num">Goal</div>
-<div class="flow__step-label">Process prior auth</div>
-<div class="flow__step-desc">Review clinical criteria</div>
+<div class="flow__step-label" data-swap="s9.goalLabel"></div>
+<div class="flow__step-desc" data-swap="s9.goalDesc"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">Plan</div>
 <div class="flow__step-label">Identify requirements</div>
-<div class="flow__step-desc">What docs are needed?</div>
+<div class="flow__step-desc" data-swap="s9.planDesc"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">Act</div>
 <div class="flow__step-label">Retrieve &amp; check</div>
-<div class="flow__step-desc">Patient records + payer rules</div>
+<div class="flow__step-desc" data-swap="s9.actDesc"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step">
 <div class="flow__step-num">Observe</div>
 <div class="flow__step-label">Evaluate result</div>
-<div class="flow__step-desc">Missing lab results</div>
+<div class="flow__step-desc" data-swap="s9.observeDesc"></div>
 </div>
 <div class="flow__arrow">→</div>
 <div class="flow__step" style="border-color:var(--cp-warning);">
 <div class="flow__step-num">Replan</div>
-<div class="flow__step-label">Request missing docs</div>
+<div class="flow__step-label" data-swap="s9.replanLabel"></div>
 <div class="flow__step-desc">Then re-evaluate</div>
 </div>
 </div>
 <div class="slide-callout" style="margin-top:20px;">
-<strong>The shift:</strong> You've gone from <strong>writing the script</strong> to <strong>defining the operating environment</strong>. Agent quality now lives in the quality of your instructions, tool names, and data boundaries — not in how many conversation branches you drew.
+<strong>The shift:</strong> You've gone from <strong>writing the script</strong> to <strong>defining the operating environment</strong>. Agent quality now lives in the quality of your instructions, tool names, and data boundaries - not in how many conversation branches you drew.
       </div>
 <div class="example" style="margin-top:10px;">
 <div class="example__label">Also supports</div>
@@ -695,7 +839,7 @@ body {
 </div>
 </div>
 <!-- SLIDE 10: Side-by-Side Comparison -->
-<div class="slide" data-notes="Let's put them side by side. The standard harness gives you authored topics, conversation paths, and predictable routing — you script the experience. The GitHub Copilot harness gives you natural-language instructions and goal-driven orchestration — you define the environment and let the agent reason. Neither is universally better. The standard harness excels at well-defined, structured interactions. The GitHub Copilot harness excels at dynamic, multi-step work. And they cannot be mixed — agents cannot be transferred between harnesses."><div class="slide__content" style="max-width:1040px;">
+<div class="slide" data-notes="Let's put them side by side. The standard harness gives you authored topics, conversation paths, and predictable routing - you script the experience. The GitHub Copilot harness gives you natural-language instructions and goal-driven orchestration - you define the environment and let the agent reason. Neither is universally better. The standard harness excels at well-defined, structured interactions. The GitHub Copilot harness excels at dynamic, multi-step work. And they cannot be mixed - agents cannot be transferred between harnesses."><div class="slide__content" style="max-width:1040px;">
 <h2>What Changed: Side by Side</h2>
 <p>Two architectures, different strengths.</p>
 <div class="side-by-side">
@@ -707,7 +851,7 @@ body {
 <ul>
 <li><strong style="color:var(--cp-accent)">You provide:</strong> Topics, rules, and conversation paths</li>
 <li><strong style="color:var(--cp-accent)">At runtime:</strong> Follows maker-defined routing and paths</li>
-<li><strong style="color:var(--cp-accent)">Primary control:</strong> Topics tab — trigger phrases, node graphs, branching</li>
+<li><strong style="color:var(--cp-accent)">Primary control:</strong> Topics tab - trigger phrases, node graphs, branching</li>
 <li><strong style="color:var(--cp-accent)">Orchestration:</strong> Classic (you route) or generative (AI selects topics)</li>
 <li><strong style="color:var(--cp-accent)">Capabilities:</strong> Prompts, branches, structured Q&amp;A</li>
 </ul>
@@ -720,84 +864,62 @@ body {
 <ul>
 <li><strong style="color:var(--cp-accent)">You provide:</strong> Goals, instructions, knowledge, tools, and boundaries</li>
 <li><strong style="color:var(--cp-accent)">At runtime:</strong> Plans how to pursue the goal, adjusts dynamically</li>
-<li><strong style="color:var(--cp-accent)">Primary control:</strong> Instructions — natural language, no conversation trees</li>
+<li><strong style="color:var(--cp-accent)">Primary control:</strong> Instructions - natural language, no conversation trees</li>
 <li><strong style="color:var(--cp-accent)">Orchestration:</strong> Goal-driven (plan → act → observe → replan)</li>
 <li><strong style="color:var(--cp-accent)">Capabilities:</strong> Skills, memory, connected agents, file handling, MCP, Work IQ</li>
 </ul>
 </div>
 </div>
 <div class="slide-callout" style="margin-top:18px;">
-<strong>Important:</strong> Agents cannot be transferred between harnesses — they use different architectures. Choose deliberately at the start.
+<strong>Important:</strong> Agents cannot be transferred between harnesses - they use different architectures. Choose deliberately at the start.
   </div>
 </div></div>
 <!-- SLIDE 11: When to Use Which -->
-<div class="slide" data-notes="Here is the decision framework mapped to healthcare. For simple knowledge Q and A grounded in M365 content — member benefits FAQ, clinical guidelines — the Copilot chat harness or Agent Builder is fastest. For structured, predictable interactions with defined paths — patient billing inquiries, appointment scheduling — the standard harness gives you control. For complex, multi-step reasoning — prior auth automation, care coordination, claims adjudication — the GitHub Copilot harness can reason through dynamic situations and combine multiple tools."><div class="slide__content" style="max-width:1080px;">
+<div class="slide" data-notes="Here is the decision framework mapped to healthcare. For simple knowledge Q and A grounded in M365 content - member benefits FAQ, clinical guidelines - the Copilot chat harness or Agent Builder is fastest. For structured, predictable interactions with defined paths - patient billing inquiries, appointment scheduling - the standard harness gives you control. For complex, multi-step reasoning - prior auth automation, care coordination, claims adjudication - the GitHub Copilot harness can reason through dynamic situations and combine multiple tools."><div class="slide__content" style="max-width:1080px;">
 <h2>When to Use Which</h2>
-<p>Map the harness to the healthcare scenario.</p>
+<p data-swap="s11.lead"></p>
 <div class="cards cards--3col" style="margin-top:20px; align-items:stretch;">
 <div class="card use-case-card">
 <div class="card__icon">💬</div>
 <h4>Copilot Chat Harness</h4>
-<p><strong>Scenario:</strong> Member benefits FAQ grounded in compliance documents and clinical guidelines</p>
-<p><strong>Why:</strong> Simple knowledge Q&amp;A inside M365 — fastest path to value</p>
+<p data-swap="s11.chat"></p>
+<p><strong>Why:</strong> Simple knowledge Q&amp;A inside M365 - fastest path to value</p>
 </div>
 <div class="card use-case-card">
 <div class="card__icon">📋</div>
 <h4>Standard Harness</h4>
-<p><strong>Scenario:</strong> Patient billing inquiry agent with structured question paths and claim status lookups</p>
-<p><strong>Why:</strong> Predictable, rule-based — consistent experience every time</p>
+<p data-swap="s11.standard"></p>
+<p><strong>Why:</strong> Predictable, rule-based - consistent experience every time</p>
 </div>
 <div class="card use-case-card" style="border-color:var(--cp-accent); box-shadow:0 0 0 1px var(--cp-accent), var(--cp-card-shadow); background:linear-gradient(180deg, var(--cp-accent-soft) 0%, var(--cp-surface) 28%);">
 <div class="card__icon">🧠</div>
 <h4>GitHub Copilot Harness</h4>
-<p><strong>Scenario:</strong> Prior auth automation — reads clinical docs, checks payer criteria, requests missing info, and routes exceptions</p>
+<p data-swap="s11.github"></p>
 <p><strong>Why:</strong> Multi-step reasoning across tools, knowledge, and actions</p>
 </div>
 </div>
 </div></div>
-<!-- SLIDE 12: Poll -->
-<div class="slide slide--transition" data-notes="Interactive moment. Ask the audience: Which of these healthcare scenarios would have the biggest impact at your organisation? Give them 30 seconds to think, then discuss. This surfaces their priorities and helps you tailor the rest of the conversation to what matters most to them.">
+<!-- SLIDE 12: Industry Scenario Grid -->
+<div class="slide" data-notes-key="nGrid" data-notes="Six scenarios sized for this audience. Use the selector in the top right to switch between provider, payer, and MedTech and pharma views.">
+<div class="slide__content" style="max-width:1100px;">
+<h2 data-swap="grid.title"></h2>
+<p data-swap="grid.subtitle"></p>
+<div class="scenario-grid" id="scenarioGrid"></div>
+<div class="slide-callout" style="margin-top:16px;" data-swap="grid.guardrail"></div>
+</div>
+</div>
+<!-- SLIDE 13: Poll -->
+<div class="slide slide--transition" data-notes-key="nPoll" data-notes="Interactive moment. Ask the audience which scenario would have the biggest impact at their organisation. Give them 30 seconds, then discuss. This surfaces their priorities and helps you tailor the rest of the conversation.">
 <div class="slide__content" style="max-width:780px;">
 <h2>What Would Have the Biggest Impact?</h2>
-<p style="margin-bottom:20px;">Think about your organisation — which scenario resonates most?</p>
-<div class="poll-options">
-<div class="poll-option" onclick="this.classList.toggle('selected')">
-<div class="poll-option__icon">📝</div>
-<div class="poll-option__title">Prior Auth Automation</div>
-<div class="poll-option__desc">Reduce manual review and speed approvals</div>
-</div>
-<div class="poll-option" onclick="this.classList.toggle('selected')">
-<div class="poll-option__icon">🏥</div>
-<div class="poll-option__title">Patient Intake &amp; Triage</div>
-<div class="poll-option__desc">Streamline registration and initial assessment</div>
-</div>
-<div class="poll-option" onclick="this.classList.toggle('selected')">
-<div class="poll-option__icon">💰</div>
-<div class="poll-option__title">Claims Status &amp; Resolution</div>
-<div class="poll-option__desc">Self-service claim tracking for members or staff</div>
-</div>
-<div class="poll-option" onclick="this.classList.toggle('selected')">
-<div class="poll-option__icon">📋</div>
-<div class="poll-option__title">Staff Credentialing</div>
-<div class="poll-option__desc">Automate credential verification and onboarding</div>
-</div>
-<div class="poll-option" onclick="this.classList.toggle('selected')">
-<div class="poll-option__icon">🤝</div>
-<div class="poll-option__title">Care Coordination</div>
-<div class="poll-option__desc">Referral routing and cross-team handoffs</div>
-</div>
-<div class="poll-option" onclick="this.classList.toggle('selected')">
-<div class="poll-option__icon">💬</div>
-<div class="poll-option__title">Something Else</div>
-<div class="poll-option__desc">Drop it in the chat!</div>
-</div>
-</div>
+<p style="margin-bottom:20px;">Think about your organisation - which scenario resonates most?</p>
+<div class="poll-options" id="pollOptions"></div>
 </div>
 </div>
 <!-- SLIDE 13: The Power Platform -->
-<div class="slide" data-notes="Copilot Studio does not exist in isolation. It is part of the Power Platform — five tools on a shared foundation. Power Apps for low-code apps, Power Automate for workflows and RPA, Power Pages for external-facing portals like patient portals, Copilot Studio for agents, and Power BI for analytics. They all share Dataverse as a common data layer and over 1000 connectors to bring in data from Epic, Cerner, claims systems, and more."><div class="slide__content" style="max-width:1080px;">
+<div class="slide" data-notes="Copilot Studio does not exist in isolation. It is part of the Power Platform - five tools on a shared foundation. Power Apps for low-code apps, Power Automate for workflows and RPA, Power Pages for external-facing portals like patient portals, Copilot Studio for agents, and Power BI for analytics. They all share Dataverse as a common data layer and over 1000 connectors to bring in data from Epic, Cerner, claims systems, and more."><div class="slide__content" style="max-width:1080px;">
 <h2>The Power Platform</h2>
-<p>Six products, one shared foundation — Copilot Studio is highlighted because it sits inside the broader Power Platform ecosystem.</p>
+<p>Six products, one shared foundation - Copilot Studio is highlighted because it sits inside the broader Power Platform ecosystem.</p>
 <div class="platform-grid">
 <div class="platform-card">
 <img alt="Power Apps" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzQzMDNfMTIzMCkiPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfNDMwM18xMjMwKSI+CjxwYXRoIGQ9Ik00NC4xNTUzIDkuNzcxOTZMNjIuOTI1NCA0Mi42MTk2QzY0LjgzMDUgNDUuOTUzNiA2NC44MzA1IDUwLjA0NjQgNjIuOTI1NCA1My4zODA0TDQ0LjE1NTMgODYuMjI4QzM4Ljc4MDggOTUuNjMzNCAyNS4yMTkgOTUuNjMzNSAxOS44NDQ1IDg2LjIyOEwyLjI1MjUgNTUuNDQyMUMtMC4zODI2MzcgNTAuODMwNiAtMC4zODI2NDUgNDUuMTY5NCAyLjI1MjQ5IDQwLjU1NzlMMTkuODQ0NSA5Ljc3MTk2QzI1LjIxOSAwLjM2NjU1MSAzOC43ODA4IDAuMzY2NTQ5IDQ0LjE1NTMgOS43NzE5NloiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik00NC4xNTUzIDkuNzcxOTZMNjIuOTI1NCA0Mi42MTk2QzY0LjgzMDUgNDUuOTUzNiA2NC44MzA1IDUwLjA0NjQgNjIuOTI1NCA1My4zODA0TDQ0LjE1NTMgODYuMjI4QzM4Ljc4MDggOTUuNjMzNCAyNS4yMTkgOTUuNjMzNSAxOS44NDQ1IDg2LjIyOEwyLjI1MjUgNTUuNDQyMUMtMC4zODI2MzcgNTAuODMwNiAtMC4zODI2NDUgNDUuMTY5NCAyLjI1MjQ5IDQwLjU1NzlMMTkuODQ0NSA5Ljc3MTk2QzI1LjIxOSAwLjM2NjU1MSAzOC43ODA4IDAuMzY2NTQ5IDQ0LjE1NTMgOS43NzE5NloiIGZpbGw9InVybCgjcGFpbnQxX3JhZGlhbF80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik02NS45OTk5IDQ4TDQ0LjE1NTMgODYuMjI4QzM4Ljc4MDggOTUuNjMzNCAyNS4yMTkgOTUuNjMzNCAxOS44NDQ1IDg2LjIyOEwxLjk5OTg4IDU1QzcuMzA1NjggNjQuMjg1MiAyMC42OTQxIDY0LjI4NTIgMjUuOTk5OSA1NUw0Ny45OTk5IDE2LjVMNjUuOTk5OSA0OFoiIGZpbGw9InVybCgjcGFpbnQyX2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik02NS45OTk5IDQ4TDQ0LjE1NTMgODYuMjI4QzM4Ljc4MDggOTUuNjMzNCAyNS4yMTkgOTUuNjMzNCAxOS44NDQ1IDg2LjIyOEwxLjk5OTg4IDU1QzcuMzA1NjggNjQuMjg1MiAyMC42OTQxIDY0LjI4NTIgMjUuOTk5OSA1NUw0Ny45OTk5IDE2LjVMNjUuOTk5OSA0OFoiIGZpbGw9InVybCgjcGFpbnQzX2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik01NC45NDU4IDI4LjY1NTRMODEuOTk5OSA3Nkw5My4zODgxIDU2LjA3MDVDOTYuMjQ1OCA1MS4wNjk2IDk2LjI0NTggNDQuOTMwNCA5My4zODgxIDM5LjkyOTVMNzYuMTU1MyA5Ljc3MTk2QzcwLjc4MDggMC4zNjY1NTQgNTcuMjE5IDAuMzY2NTU0IDUxLjg0NDUgOS43NzE5N0w0MS4wNTM5IDI4LjY1NTRDNDQuMTI1MSAyMy4yODA5IDUxLjg3NDcgMjMuMjgwOSA1NC45NDU4IDI4LjY1NTRaIiBmaWxsPSJ1cmwoI3BhaW50NF9saW5lYXJfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNNTQuOTQ1OCAyOC42NTU0TDgxLjk5OTkgNzZMOTMuMzg4MSA1Ni4wNzA1Qzk2LjI0NTggNTEuMDY5NiA5Ni4yNDU4IDQ0LjkzMDQgOTMuMzg4MSAzOS45Mjk1TDc2LjE1NTMgOS43NzE5NkM3MC43ODA4IDAuMzY2NTU0IDU3LjIxOSAwLjM2NjU1NCA1MS44NDQ1IDkuNzcxOTdMNDEuMDUzOSAyOC42NTU0QzQ0LjEyNTEgMjMuMjgwOSA1MS44NzQ3IDIzLjI4MDkgNTQuOTQ1OCAyOC42NTU0WiIgZmlsbD0idXJsKCNwYWludDVfbGluZWFyXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTc5LjczMTggMjMuOTY5MUw0Ny45OTk5IDc5LjVMNTEuODQ0NSA4Ni4yMjhDNTcuMjE5IDk1LjYzMzQgNzAuNzgwOCA5NS42MzM1IDc2LjE1NTMgODYuMjI4TDk0LjAzMDggNTQuOTQ1OUM5Ni40OTAyIDUwLjY0MTkgOTYuNDkwMiA0NS4zNTgxIDk0LjAzMDggNDEuMDU0MUw3OS43MzE4IDE2LjAzMDlDODEuMTM3MiAxOC40OTAzIDgxLjEzNzIgMjEuNTA5NiA3OS43MzE4IDIzLjk2OTFaIiBmaWxsPSJ1cmwoI3BhaW50Nl9saW5lYXJfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNNTEuODQ0NSA4Ni4yMjhMNDcuOTk5OSA3OS41TDY1Ljk5OTkgNDhMODEuOTk5OSA3Nkw3Ni4xNTUzIDg2LjIyOEM3MC43ODA4IDk1LjYzMzQgNTcuMjE5IDk1LjYzMzQgNTEuODQ0NSA4Ni4yMjhaIiBmaWxsPSJ1cmwoI3BhaW50N19saW5lYXJfNDMwM18xMjMwKSIvPgo8L2c+CjwvZz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl80MzAzXzEyMzAiIHgxPSIxNS45OTk5IiB5MT0iNjAuNSIgeDI9IjI3Ljk5OTQiIHkyPSI1LjAwMDAxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM1MjBCNTYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzQyNzc0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxyYWRpYWxHcmFkaWVudCBpZD0icGFpbnQxX3JhZGlhbF80MzAzXzEyMzAiIGN4PSIwIiBjeT0iMCIgcj0iMSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGdyYWRpZW50VHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzEuNDk5OSA4LjAwMDAyKSByb3RhdGUoMTIzLjgxMSkgc2NhbGUoNjUuNTkzNSAyMC4zMTU3KSI+CjxzdG9wIG9mZnNldD0iMC41MTIzOTEiIHN0b3AtY29sb3I9IiM0QzFFNEMiIHN0b3Atb3BhY2l0eT0iMCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM0QzFFNEMiLz4KPC9yYWRpYWxHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjExLjk5OTkiIHkxPSI3MSIgeDI9IjU5LjQ5OTkiIHkyPSI0MS41IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNENDY3QjkiLz4KPHN0b3Agb2Zmc2V0PSIwLjMwODA3OSIgc3RvcC1jb2xvcj0iIzk4MkY5MCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3NDI3NzQiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDNfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjQzLjk5OTkiIHkxPSI1My40OTk4IiB4Mj0iNjcuNSIgeTI9IjUwLjk5OTgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzc0Mjc3NCIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzUyMEI1NiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50NF9saW5lYXJfNDMwM18xMjMwIiB4MT0iNDIuOTk5OSIgeTE9IjI5IiB4Mj0iODIuNDk5OSIgeTI9IjU2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNFOUExQ0IiLz4KPHN0b3Agb2Zmc2V0PSIwLjQwODI5IiBzdG9wLWNvbG9yPSIjRDQ2N0I5Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0JCMzVBNCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50NV9saW5lYXJfNDMwM18xMjMwIiB4MT0iNjcuNDk5OSIgeTE9IjIzLjUiIHgyPSI4MC45OTk5IiB5Mj0iMjYuNSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjRTQ4Q0M3IiBzdG9wLW9wYWNpdHk9IjAiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjQkIzNUE0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ2X2xpbmVhcl80MzAzXzEyMzAiIHgxPSI4OS4yNTY1IiB5MT0iNzcuMTYyMSIgeDI9Ijc2LjQ1MTUiIHkyPSI0MS4zODM2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNFNDhDQzciLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjRjdDNEUyIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ3X2xpbmVhcl80MzAzXzEyMzAiIHgxPSI3NS4xOTk5IiB5MT0iNzcuNTgwMSIgeDI9IjU0Ljg2OSIgeTI9IjMyLjA3NzciIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0U0OENDNyIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMC42NzcyNCIgc3RvcC1jb2xvcj0iI0Q0NjdCOSIgc3RvcC1vcGFjaXR5PSIwLjUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjQkIzNUE0Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfNDMwM18xMjMwIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAxXzQzMDNfMTIzMCI+CjxyZWN0IHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K"/>
@@ -822,7 +944,7 @@ body {
 <div class="platform-card">
 <img alt="Power Pages" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzQzMDNfMTIzMCkiPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfNDMwM18xMjMwKSI+CjxwYXRoIGQ9Ik0xNi45OTU2IDU5LjY4MTVMNTMuODMyNyAzMS45NjkyQzU3LjI5MDcgMjkuMzY3NyA2Mi4wNTE4IDI5LjM2NDIgNjUuNTEzNyAzMS45NjA2TDkwLjcxNyA1MC44NjI0Qzk1Ljg5ODQgNTQuNzQ4NCA5NS45MDQ4IDYyLjUxODIgOTAuNzI5OCA2Ni40MTI3TDU0LjE5NTIgOTMuOTA2N0M1MC41MjY4IDk2LjY2NzMgNDUuNDc0MSA5Ni42NjY3IDQxLjgwNjMgOTMuOTA1MUwxNi45OTIzIDc1LjIyMTZDMTEuODIzOSA3MS4zMzAxIDExLjgyNTUgNjMuNTcwOSAxNi45OTU2IDU5LjY4MTVaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNMTYuOTk1NiA1OS42ODE1TDUzLjgzMjcgMzEuOTY5MkM1Ny4yOTA3IDI5LjM2NzcgNjIuMDUxOCAyOS4zNjQyIDY1LjUxMzcgMzEuOTYwNkw5MC43MTcgNTAuODYyNEM5NS44OTg0IDU0Ljc0ODQgOTUuOTA0OCA2Mi41MTgyIDkwLjcyOTggNjYuNDEyN0w1NC4xOTUyIDkzLjkwNjdDNTAuNTI2OCA5Ni42NjczIDQ1LjQ3NDEgOTYuNjY2NyA0MS44MDYzIDkzLjkwNTFMMTYuOTkyMyA3NS4yMjE2QzExLjgyMzkgNzEuMzMwMSAxMS44MjU1IDYzLjU3MDkgMTYuOTk1NiA1OS42ODE1WiIgZmlsbD0idXJsKCNwYWludDFfcmFkaWFsXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTE2LjkyMTEgNTkuNjcyN0wyMC43NzA4IDU2Ljc1MjJMNjIuMTQ4NCA4Ny45Mjk3TDU0LjE5NDYgOTMuOTEwN0M1MC41MjYyIDk2LjY2OTIgNDUuNDc1MyA5Ni42Njc2IDQxLjgwODcgOTMuOTA2OUwxNi45NDkyIDc1LjE4OTFDMTEuNzkzOCA3MS4zMDc0IDExLjc3OTggNjMuNTczIDE2LjkyMTEgNTkuNjcyN1oiIGZpbGw9InVybCgjcGFpbnQyX2xpbmVhcl80MzAzXzEyMzApIiBmaWxsLW9wYWNpdHk9IjAuNiIvPgo8cGF0aCBkPSJNMTYuOTIxMSA1OS42NzI3TDIwLjc3MDggNTYuNzUyMkw2Mi4xNDg0IDg3LjkyOTdMNTQuMTk0NiA5My45MTA3QzUwLjUyNjIgOTYuNjY5MiA0NS40NzUzIDk2LjY2NzYgNDEuODA4NyA5My45MDY5TDE2Ljk0OTIgNzUuMTg5MUMxMS43OTM4IDcxLjMwNzQgMTEuNzc5OCA2My41NzMgMTYuOTIxMSA1OS42NzI3WiIgZmlsbD0idXJsKCNwYWludDNfcmFkaWFsXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTUuMjk2MTUgMjkuNTkzMkw0MS44MDQzIDIuMDk3NEM0NS40NzI5IC0wLjY2NTUzOSA1MC41Mjc0IC0wLjY2NTg2NCA1NC4xOTYzIDIuMDk2NjFMNzkuMDA3OSAyMC43NzgyQzg0LjE3NjMgMjQuNjY5NyA4NC4xNzQ3IDMyLjQyOSA3OS4wMDQ2IDM2LjMxODNMNDIuMTY5OCA2NC4wMjlDMzguNzEwNiA2Ni42MzEzIDMzLjk0NzkgNjYuNjMzOSAzMC40ODU5IDY0LjAzNTVMNS4zMDkwNSA0NS4xMzkxQzAuMTMxNTAyIDQxLjI1MzEgMC4xMjUwNiAzMy40ODc4IDUuMjk2MTUgMjkuNTkzMloiIGZpbGw9InVybCgjcGFpbnQ0X2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik01LjI5NjE1IDI5LjU5MzJMNDEuODA0MyAyLjA5NzRDNDUuNDcyOSAtMC42NjU1MzkgNTAuNTI3NCAtMC42NjU4NjQgNTQuMTk2MyAyLjA5NjYxTDc5LjAwNzkgMjAuNzc4MkM4NC4xNzYzIDI0LjY2OTcgODQuMTc0NyAzMi40MjkgNzkuMDA0NiAzNi4zMTgzTDQyLjE2OTggNjQuMDI5QzM4LjcxMDYgNjYuNjMxMyAzMy45NDc5IDY2LjYzMzkgMzAuNDg1OSA2NC4wMzU1TDUuMzA5MDUgNDUuMTM5MUMwLjEzMTUwMiA0MS4yNTMxIDAuMTI1MDYgMzMuNDg3OCA1LjI5NjE1IDI5LjU5MzJaIiBmaWxsPSJ1cmwoI3BhaW50NV9yYWRpYWxfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNNS4yOTYxNSAyOS41OTMyTDQxLjgwNDMgMi4wOTc0QzQ1LjQ3MjkgLTAuNjY1NTM5IDUwLjUyNzQgLTAuNjY1ODY0IDU0LjE5NjMgMi4wOTY2MUw3OS4wMDc5IDIwLjc3ODJDODQuMTc2MyAyNC42Njk3IDg0LjE3NDcgMzIuNDI5IDc5LjAwNDYgMzYuMzE4M0w0Mi4xNjk4IDY0LjAyOUMzOC43MTA2IDY2LjYzMTMgMzMuOTQ3OSA2Ni42MzM5IDMwLjQ4NTkgNjQuMDM1NUw1LjMwOTA1IDQ1LjEzOTFDMC4xMzE1MDIgNDEuMjUzMSAwLjEyNTA2IDMzLjQ4NzggNS4yOTYxNSAyOS41OTMyWiIgZmlsbD0idXJsKCNwYWludDZfbGluZWFyXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTMzLjg5ODkgOC4xMjg0TDQxLjc5OCAyLjEzNkM0NS40Njc1IC0wLjY0Nzc1OSA1MC41MzkxIC0wLjY1NjkyNSA1NC4yMTg3IDIuMTEzNTVMNzkuMDUwOCAyMC44MTA3Qzg0LjIwNjIgMjQuNjkyNCA4NC4yMjAyIDMyLjQyNjkgNzkuMDc4OSAzNi4zMjcyTDc1LjIyOTIgMzkuMjQ3N0wzMy44OTg5IDguMTI4NFoiIGZpbGw9InVybCgjcGFpbnQ3X2xpbmVhcl80MzAzXzEyMzApIiBmaWxsLW9wYWNpdHk9IjAuNiIvPgo8cGF0aCBkPSJNMzMuODk4OSA4LjEyODRMNDEuNzk4IDIuMTM2QzQ1LjQ2NzUgLTAuNjQ3NzU5IDUwLjUzOTEgLTAuNjU2OTI1IDU0LjIxODcgMi4xMTM1NUw3OS4wNTA4IDIwLjgxMDdDODQuMjA2MiAyNC42OTI0IDg0LjIyMDIgMzIuNDI2OSA3OS4wNzg5IDM2LjMyNzJMNzUuMjI5MiAzOS4yNDc3TDMzLjg5ODkgOC4xMjg0WiIgZmlsbD0idXJsKCNwYWludDhfcmFkaWFsXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTQzLjE1NTcgNjUuNjY1NUw4Mi4wMjM4IDQ5Ljk2ODhDODUuMDQ5OCA0OC43NDY3IDg4LjQ5NDYgNDkuMTk2NSA5MS4xMDU0IDUxLjE1NDZMNjUuNTU4NiAzMS45OTQ1QzYxLjkwMzUgMjkuMjUzMiA1Ny4wODA4IDI4LjYyMzQgNTIuODQ0NCAzMC4zMzQzTDEzLjk3NjMgNDYuMDMxQzEwLjk1MDIgNDcuMjUzMSA3LjUwNTQ1IDQ2LjgwMzMgNC44OTQ2OCA0NC44NDUyTDMwLjQ0MTUgNjQuMDA1M0MzNC4wOTY2IDY2Ljc0NjYgMzguOTE5MyA2Ny4zNzY0IDQzLjE1NTcgNjUuNjY1NVoiIGZpbGw9InVybCgjcGFpbnQ5X2xpbmVhcl80MzAzXzEyMzApIi8+CjwvZz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjQ1LjU2OSIgeTE9Ijk4LjU2ODciIHgyPSI3Mi43OTg0IiB5Mj0iNDAuMjIwMSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNjg2NEY2Ii8+CjxzdG9wIG9mZnNldD0iMC41Mjg3ODEiIHN0b3AtY29sb3I9IiM0QTQzQ0IiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNUIyQUI1Ii8+CjwvbGluZWFyR3JhZGllbnQ+CjxyYWRpYWxHcmFkaWVudCBpZD0icGFpbnQxX3JhZGlhbF80MzAzXzEyMzAiIGN4PSIwIiBjeT0iMCIgcj0iMSIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCg1LjA4NjQ0IDE5LjU0ODIgLTYxLjAzNzIgMTkuNjU2NSA2Ny43MDcyIDUxLjc1NTkpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMzMTJBOUEiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNEE0M0NCIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9yYWRpYWxHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDJfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjU2LjQ5ODYiIHkxPSI2MS42MDcyIiB4Mj0iMTIuMDcxNyIgeTI9IjcwLjExNDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0EzQTNGRiIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0EzQTNGRiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50M19yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDIzLjIyOTkgNTYuNzUyMikgcm90YXRlKDM0LjY2MTQpIHNjYWxlKDI2LjQ2NTYgMTMuNDM1NikiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNEE0M0NCIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzY4NjRGNiIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvcmFkaWFsR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ0X2xpbmVhcl80MzAzXzEyMzAiIHgxPSI3MS42NzE5IiB5MT0iNS41MTk0NiIgeDI9IjguNDQxMjYiIHkyPSI0Ny4zOTQxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNBQzgwRkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjY2MDEwMSIgc3RvcC1jb2xvcj0iIzdCN0JGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1NzUwRTIiLz4KPC9saW5lYXJHcmFkaWVudD4KPHJhZGlhbEdyYWRpZW50IGlkPSJwYWludDVfcmFkaWFsXzQzMDNfMTIzMCIgY3g9IjAiIGN5PSIwIiByPSIxIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KC0zLjIzNjgyIC0xNC40MDM5IDQ1LjE3OTQgLTEyLjU2NTYgMzEuMDY3NSA0Mi4xODYyKSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMUI0NEIxIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzdCN0JGRiIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvcmFkaWFsR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ2X2xpbmVhcl80MzAzXzEyMzAiIHgxPSIyMi4yODE4IiB5MT0iMTkuMDM3MSIgeDI9IjcuNDA4NzMiIHkyPSI0OS4yNDExIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM3QjdCRkYiIHN0b3Atb3BhY2l0eT0iMCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyMDUyQ0IiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDdfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjM5LjE2ODkiIHkxPSIzMS45ODkyIiB4Mj0iODEuNzE5OSIgeTI9IjE4LjM4NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0JBQkFGRiIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0JBQkFGRiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50OF9yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDY1LjY4ODYgNDIuODEyKSByb3RhdGUoLTEyNS42NTIpIHNjYWxlKDI0Ljk3MTIgMTguNzgzKSI+CjxzdG9wIHN0b3AtY29sb3I9IiM1NzUwRTIiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOEY4RkZGIiBzdG9wLW9wYWNpdHk9IjAiLz4KPC9yYWRpYWxHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDlfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjIxIiB5MT0iNjkuNDk5OSIgeDI9IjcwLjcyMjEiIHkyPSIyOS42NDMzIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM1OEFBRkUiLz4KPHN0b3Agb2Zmc2V0PSIwLjI4MzI5IiBzdG9wLWNvbG9yPSIjOEY4RkZGIi8+CjxzdG9wIG9mZnNldD0iMC42NzE1NTQiIHN0b3AtY29sb3I9IiNBM0EzRkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjQ0VCMEZGIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfNDMwM18xMjMwIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAxXzQzMDNfMTIzMCI+CjxyZWN0IHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K"/>
 <div class="platform-card__name">Power Pages</div>
-<div class="platform-card__desc">Patient and member portals</div>
+<div class="platform-card__desc" data-swap="s13.pages"></div>
 </div>
 <div class="platform-card">
 <img alt="AI Builder" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzQzMDNfMTIzMCkiPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfNDMwM18xMjMwKSI+CjxwYXRoIGQ9Ik00NS4xNjQgNC42NzY5NEM0Mi4yNjk3IDMuMDE4NzQgMzguNzEzMyAzLjAxODc0IDM1LjgxOSA0LjY3Njk0TDEzLjAwMDQgMTcuNzUwMUMxMS4xMzQyIDE4LjgxOTMgOS45ODMwNCAyMC44MDU1IDkuOTgzMDQgMjIuOTU2MlYyOC4xNjhDOS45ODMwNCAzMC4zMTg4IDguODMxODggMzIuMzA1IDYuOTY1NzIgMzMuMzc0MUw1LjAxNzMyIDM0LjQ5MDRDMy4xNTExNiAzNS41NTk2IDIgMzcuNTQ1OCAyIDM5LjY5NjVWNjAuMDgxNUMyIDYyLjIzOTkgMy4xNTkzMSA2NC4yMzE5IDUuMDM1OTUgNjUuMjk4MkwzNi4wNDkgODIuOTE5MkM0MS4zODIyIDg1Ljk0OTQgNDguMDAxMSA4Mi4wOTczIDQ4LjAwMSA3NS45NjM0TDQ4IDkuNTcwMjFDNDggNy41NDg3MSA0Ni45MTggNS42ODE4NSA0NS4xNjQgNC42NzY5NFoiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik00NS4xNjQgNC42NzY5NEM0Mi4yNjk3IDMuMDE4NzQgMzguNzEzMyAzLjAxODc0IDM1LjgxOSA0LjY3Njk0TDEzLjAwMDQgMTcuNzUwMUMxMS4xMzQyIDE4LjgxOTMgOS45ODMwNCAyMC44MDU1IDkuOTgzMDQgMjIuOTU2MlYyOC4xNjhDOS45ODMwNCAzMC4zMTg4IDguODMxODggMzIuMzA1IDYuOTY1NzIgMzMuMzc0MUw1LjAxNzMyIDM0LjQ5MDRDMy4xNTExNiAzNS41NTk2IDIgMzcuNTQ1OCAyIDM5LjY5NjVWNjAuMDgxNUMyIDYyLjIzOTkgMy4xNTkzMSA2NC4yMzE5IDUuMDM1OTUgNjUuMjk4MkwzNi4wNDkgODIuOTE5MkM0MS4zODIyIDg1Ljk0OTQgNDguMDAxMSA4Mi4wOTczIDQ4LjAwMSA3NS45NjM0TDQ4IDkuNTcwMjFDNDggNy41NDg3MSA0Ni45MTggNS42ODE4NSA0NS4xNjQgNC42NzY5NFoiIGZpbGw9InVybCgjcGFpbnQxX2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik00NS4xNjQgNC42NzY5NEM0Mi4yNjk3IDMuMDE4NzQgMzguNzEzMyAzLjAxODc0IDM1LjgxOSA0LjY3Njk0TDEzLjAwMDQgMTcuNzUwMUMxMS4xMzQyIDE4LjgxOTMgOS45ODMwNCAyMC44MDU1IDkuOTgzMDQgMjIuOTU2MlYyOC4xNjhDOS45ODMwNCAzMC4zMTg4IDguODMxODggMzIuMzA1IDYuOTY1NzIgMzMuMzc0MUw1LjAxNzMyIDM0LjQ5MDRDMy4xNTExNiAzNS41NTk2IDIgMzcuNTQ1OCAyIDM5LjY5NjVWNjAuMDgxNUMyIDYyLjIzOTkgMy4xNTkzMSA2NC4yMzE5IDUuMDM1OTUgNjUuMjk4MkwzNi4wNDkgODIuOTE5MkM0MS4zODIyIDg1Ljk0OTQgNDguMDAxMSA4Mi4wOTczIDQ4LjAwMSA3NS45NjM0TDQ4IDkuNTcwMjFDNDggNy41NDg3MSA0Ni45MTggNS42ODE4NSA0NS4xNjQgNC42NzY5NFoiIGZpbGw9InVybCgjcGFpbnQyX3JhZGlhbF80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik00OC4wMDAxIDM5LjcyMzRDNDguMDAwMSA0MS44ODI0IDQ2Ljg0MDEgNDMuODc0OSA0NC45NjI2IDQ0Ljk0MUwyMS4wNDQ3IDU4LjUyMTNDMTkuMTYzNCA1OS41ODk1IDE4LjAwMjggNjEuNTg3NyAxOC4wMDcyIDYzLjc1MTFMMTguMDM1MyA3Ny42NTgzQzE4LjAzOTYgNzkuODA0NyAxOS4xOTAyIDgxLjc4NTMgMjEuMDUyNiA4Mi44NTIzTDM1Ljg0OTggOTEuMzI5OUMzOC43MzY0IDkyLjk4MzcgNDIuMjgzMiA5Mi45ODQxIDQ1LjE3MDEgOTEuMzMwOEM0Ni45MjA0IDkwLjMyODUgNDguMDAwMSA4OC40NjU5IDQ4LjAwMDEgODYuNDQ5VjMwVjM5LjcyMzRaIiBmaWxsPSJ1cmwoI3BhaW50M19saW5lYXJfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNNDguMDAwMSAzOS43MjM0QzQ4LjAwMDEgNDEuODgyNCA0Ni44NDAxIDQzLjg3NDkgNDQuOTYyNiA0NC45NDFMMjEuMDQ0NyA1OC41MjEzQzE5LjE2MzQgNTkuNTg5NSAxOC4wMDI4IDYxLjU4NzcgMTguMDA3MiA2My43NTExTDE4LjAzNTMgNzcuNjU4M0MxOC4wMzk2IDc5LjgwNDcgMTkuMTkwMiA4MS43ODUzIDIxLjA1MjYgODIuODUyM0wzNS44NDk4IDkxLjMyOTlDMzguNzM2NCA5Mi45ODM3IDQyLjI4MzIgOTIuOTg0MSA0NS4xNzAxIDkxLjMzMDhDNDYuOTIwNCA5MC4zMjg1IDQ4LjAwMDEgODguNDY1OSA0OC4wMDAxIDg2LjQ0OVYzMFYzOS43MjM0WiIgZmlsbD0idXJsKCNwYWludDRfbGluZWFyXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTg2LjAxNzEgMjIuOTU2MkM4Ni4wMTcxIDIwLjgwNTUgODQuODY1OSAxOC44MTkzIDgyLjk5OTggMTcuNzUwMUw2MC4xODEgNC42NzY5MkM1Ny4yODY4IDMuMDE4NzMgNTMuNzMwNCAzLjAxODc0IDUwLjgzNjIgNC42NzY5MkM0OS4wODIxIDUuNjgxODQgNDguMDAwMSA3LjU0ODcyIDQ4LjAwMDEgOS41NzAyNFY3Mi42OTgzTDUyLjUyNTkgNzUuMjkxMkM1NC4zNzM1IDc2LjM0OTcgNTYuNjQzNyA3Ni4zNDk3IDU4LjQ5MTMgNzUuMjkxMkw4Mi45OTk4IDYxLjI0OTlDODQuODY1OSA2MC4xODA3IDg2LjAxNzEgNTguMTk0NSA4Ni4wMTcxIDU2LjA0MzhWMjIuOTU2MloiIGZpbGw9InVybCgjcGFpbnQ1X2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik04Ni4wMTcxIDIyLjk1NjJDODYuMDE3MSAyMC44MDU1IDg0Ljg2NTkgMTguODE5MyA4Mi45OTk4IDE3Ljc1MDFMNjAuMTgxIDQuNjc2OTJDNTcuMjg2OCAzLjAxODczIDUzLjczMDQgMy4wMTg3NCA1MC44MzYyIDQuNjc2OTJDNDkuMDgyMSA1LjY4MTg0IDQ4LjAwMDEgNy41NDg3MiA0OC4wMDAxIDkuNTcwMjRWNzIuNjk4M0w1Mi41MjU5IDc1LjI5MTJDNTQuMzczNSA3Ni4zNDk3IDU2LjY0MzcgNzYuMzQ5NyA1OC40OTEzIDc1LjI5MTJMODIuOTk5OCA2MS4yNDk5Qzg0Ljg2NTkgNjAuMTgwNyA4Ni4wMTcxIDU4LjE5NDUgODYuMDE3MSA1Ni4wNDM4VjIyLjk1NjJaIiBmaWxsPSJ1cmwoI3BhaW50Nl9yYWRpYWxfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNNjguMDE3NSAyNC43NTAzQzY5Ljg2NSAyMy42OTE4IDcyLjEzNTIgMjMuNjkxOCA3My45ODI4IDI0Ljc1MDNMOTAuOTgyOCAzNC40ODk5QzkyLjg0OSAzNS41NTkxIDk0LjAwMDEgMzcuNTQ1MyA5NC4wMDAxIDM5LjY5NlY2MC4wOTUzQzk0LjAwMDEgNjIuMjQ2MSA5Mi44NDkgNjQuMjMyMyA5MC45ODI4IDY1LjMwMTRMNzEuMDAwMSA3Ni43NDk4TDQ4LjAwMDEgNjMuNTcyOFYzOS42OTZDNDguMDAwMSAzNy41NDUzIDQ5LjE1MTMgMzUuNTU5MSA1MS4wMTc0IDM0LjQ4OTlMNjguMDE3NSAyNC43NTAzWiIgZmlsbD0idXJsKCNwYWludDdfbGluZWFyXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTY4LjAxNzUgMjQuNzUwM0M2OS44NjUgMjMuNjkxOCA3Mi4xMzUyIDIzLjY5MTggNzMuOTgyOCAyNC43NTAzTDkwLjk4MjggMzQuNDg5OUM5Mi44NDkgMzUuNTU5MSA5NC4wMDAxIDM3LjU0NTMgOTQuMDAwMSAzOS42OTZWNjAuMDk1M0M5NC4wMDAxIDYyLjI0NjEgOTIuODQ5IDY0LjIzMjMgOTAuOTgyOCA2NS4zMDE0TDcxLjAwMDEgNzYuNzQ5OEw0OC4wMDAxIDYzLjU3MjhWMzkuNjk2QzQ4LjAwMDEgMzcuNTQ1MyA0OS4xNTEzIDM1LjU1OTEgNTEuMDE3NCAzNC40ODk5TDY4LjAxNzUgMjQuNzUwM1oiIGZpbGw9InVybCgjcGFpbnQ4X3JhZGlhbF80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik00Ny45OTg3IDM5LjcyM0M0Ny45OTg3IDQxLjg4MjEgNDkuMTU4NyA0My44NzQ3IDUxLjAzNjIgNDQuOTQwN0w3NC45NTUxIDU4LjUyMUM3Ni44MzY1IDU5LjU4OTIgNzcuOTk3MSA2MS41ODc2IDc3Ljk5MjYgNjMuNzUxMUw3Ny45NjM3IDc3LjY1ODNDNzcuOTU5MyA3OS44MDQ2IDc2LjgwODcgODEuNzg1IDc0Ljk0NjQgODIuODUyTDYwLjE0ODkgOTEuMzI5N0M1Ny4yNjIzIDkyLjk4MzUgNTMuNzE1NiA5Mi45ODM4IDUwLjgyODYgOTEuMzMwNkM0OS4wNzg0IDkwLjMyODMgNDcuOTk4NyA4OC40NjU3IDQ3Ljk5ODcgODYuNDQ4OFYzM1YzOS43MjNaIiBmaWxsPSJ1cmwoI3BhaW50OV9saW5lYXJfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNNDcuOTk4NyAzOS43MjNDNDcuOTk4NyA0MS44ODIxIDQ5LjE1ODcgNDMuODc0NyA1MS4wMzYyIDQ0Ljk0MDdMNzQuOTU1MSA1OC41MjFDNzYuODM2NSA1OS41ODkyIDc3Ljk5NzEgNjEuNTg3NiA3Ny45OTI2IDYzLjc1MTFMNzcuOTYzNyA3Ny42NTgzQzc3Ljk1OTMgNzkuODA0NiA3Ni44MDg3IDgxLjc4NSA3NC45NDY0IDgyLjg1Mkw2MC4xNDg5IDkxLjMyOTdDNTcuMjYyMyA5Mi45ODM1IDUzLjcxNTYgOTIuOTgzOCA1MC44Mjg2IDkxLjMzMDZDNDkuMDc4NCA5MC4zMjgzIDQ3Ljk5ODcgODguNDY1NyA0Ny45OTg3IDg2LjQ0ODhWMzNWMzkuNzIzWiIgZmlsbD0idXJsKCNwYWludDEwX2xpbmVhcl80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik00Ny45OTg3IDM5LjcyM0M0Ny45OTg3IDQxLjg4MjEgNDkuMTU4NyA0My44NzQ3IDUxLjAzNjIgNDQuOTQwN0w3NC45NTUxIDU4LjUyMUM3Ni44MzY1IDU5LjU4OTIgNzcuOTk3MSA2MS41ODc2IDc3Ljk5MjYgNjMuNzUxMUw3Ny45NjM3IDc3LjY1ODNDNzcuOTU5MyA3OS44MDQ2IDc2LjgwODcgODEuNzg1IDc0Ljk0NjQgODIuODUyTDYwLjE0ODkgOTEuMzI5N0M1Ny4yNjIzIDkyLjk4MzUgNTMuNzE1NiA5Mi45ODM4IDUwLjgyODYgOTEuMzMwNkM0OS4wNzg0IDkwLjMyODMgNDcuOTk4NyA4OC40NjU3IDQ3Ljk5ODcgODYuNDQ4OFYzM1YzOS43MjNaIiBmaWxsPSJ1cmwoI3BhaW50MTFfbGluZWFyXzQzMDNfMTIzMCkiLz4KPC9nPgo8L2c+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfNDMwM18xMjMwIiB4MT0iMzciIHkxPSI3OCIgeDI9IjMxIiB5Mj0iMS45OTk5OSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjM0QzNUIxIi8+CjxzdG9wIG9mZnNldD0iMC42MzUyODUiIHN0b3AtY29sb3I9IiMyMDUyQ0IiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDA5NEYwIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxX2xpbmVhcl80MzAzXzEyMzAiIHgxPSIzMy41IiB5MT0iMjkuNSIgeDI9IjQ4IiB5Mj0iMzMiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzIwNTJDQiIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzNEMzVCMSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50Ml9yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDQzIDU5LjUpIHJvdGF0ZSgxNDcuOTk1KSBzY2FsZSg1Ni42MDM5IDMzLjIzMjQpIj4KPHN0b3Agb2Zmc2V0PSIwLjM1NzY3NyIgc3RvcC1jb2xvcj0iIzMxMkE5QSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMyMDUyQ0IiIHN0b3Atb3BhY2l0eT0iMCIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50M19saW5lYXJfNDMwM18xMjMwIiB4MT0iNDEuNTAwMSIgeTE9Ijk0IiB4Mj0iMzUuMzQwNCIgeTI9IjUwLjAyMjQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzU3NTBFMiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzNjdBRjIiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDRfbGluZWFyXzQzMDNfMTIzMCIgeDE9IjM4LjUwMDEiIHkxPSI3MyIgeDI9IjQ4LjAwMDEiIHkyPSI3MyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMjc2NEU3IiBzdG9wLW9wYWNpdHk9IjAiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNEE0M0NCIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ1X2xpbmVhcl80MzAzXzEyMzAiIHgxPSI2OS4wMDAxIiB5MT0iMiIgeDI9IjYxLjUwMDEiIHkyPSI0MSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMjlDM0ZGIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzQ4OTRGRSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50Nl9yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDcyLjUwMDEgMzkpIHJvdGF0ZSgtOTApIHNjYWxlKDI1LjUgNTEuOTEwNCkiPgo8c3RvcCBvZmZzZXQ9IjAuMjkzMDg4IiBzdG9wLWNvbG9yPSIjMjc2NEU3Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBGQUZGRiIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvcmFkaWFsR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ3X2xpbmVhcl80MzAzXzEyMzAiIHgxPSI3NC4wMDAxIiB5MT0iMjUuNDk5NiIgeDI9IjY2LjAwMDEiIHkyPSI3MS40OTk2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMzQkQ1RkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNDg5NEZFIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxyYWRpYWxHcmFkaWVudCBpZD0icGFpbnQ4X3JhZGlhbF80MzAzXzEyMzAiIGN4PSIwIiBjeT0iMCIgcj0iMSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGdyYWRpZW50VHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTYuMDAwMSA1NC40OTk2KSByb3RhdGUoLTU4LjI5ODYpIHNjYWxlKDE5Ljk4MTIgODIuNjQzNCkiPgo8c3RvcCBzdG9wLWNvbG9yPSIjMzY3QUYyIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzI5QzNGRiIgc3RvcC1vcGFjaXR5PSIwIi8+CjwvcmFkaWFsR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQ5X2xpbmVhcl80MzAzXzEyMzAiIHgxPSI2MC4wMDAxIiB5MT0iNDcuNSIgeDI9IjU4LjM4NjgiIHkyPSI5NC4xMzQ1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM2Q0UwRkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNThBQUZFIi8+CjwvbGluZWFyR3JhZGllbnQ+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQxMF9saW5lYXJfNDMwM18xMjMwIiB4MT0iNTkuMDAwMSIgeTE9IjYzIiB4Mj0iNTIuMDAwMSIgeTI9Ijk0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM2NkMwRkYiIHN0b3Atb3BhY2l0eT0iMCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNBM0EzRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDExX2xpbmVhcl80MzAzXzEyMzAiIHgxPSI1Ni41MDAxIiB5MT0iNzEiIHgyPSI0OC4wMDAxIiB5Mj0iNzEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzY2QzBGRiIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0JBQkFGRiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzQzMDNfMTIzMCI+CjxyZWN0IHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPGNsaXBQYXRoIGlkPSJjbGlwMV80MzAzXzEyMzAiPgo8cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg=="/>
@@ -833,19 +955,19 @@ body {
 <div class="platform-bar platform-bar--dataverse">
 <img alt="Dataverse" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzQzMDNfMTIzMCkiPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDFfNDMwM18xMjMwKSI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMl80MzAzXzEyMzApIj4KPHBhdGggZD0iTTEzLjg3NzYgMjEuODI0MkMyOS4xMDMzIDguMTM3OTEgNDkuNzUwMSA4LjE4NjEgNjIuOTU1IDE4LjkxMzRDNzQuOTgxNiAyOC42ODM2IDc3LjQ2OTcgNDQuMzE1OSA3MC44NTEgNTUuNzgwMUM2NC4yMzIxIDY3LjI0NDMgNTIuNTI3NyA3MC4xNDU1IDM5LjUwMTEgNjIuNjI0N0wzMS43Mjg2IDc2LjA4N0wzMS43MjM0IDc2LjA4NjJDMjcuNDE4MSA4My41MzI0IDE3Ljg5MzcgODYuMDgyOCAxMC40NDM3IDgxLjc4MTdDNy40NTM5NCA4MC4wNTU2IDUuMjUzMjIgNzcuNDg3OSAzLjk2NjY1IDc0LjU1MUwzLjk2MDk2IDc0LjU1MTFDLTQuMDc4MzIgNTUuNzgwNCAwLjIwMDc0NSAzNC4xMTg0IDEzLjg3NzYgMjEuODI0MloiIGZpbGw9InVybCgjcGFpbnQwX3JhZGlhbF80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik0xMy44Nzc2IDIxLjgyNDJDMjkuMTAzMyA4LjEzNzkxIDQ5Ljc1MDEgOC4xODYxIDYyLjk1NSAxOC45MTM0Qzc0Ljk4MTYgMjguNjgzNiA3Ny40Njk3IDQ0LjMxNTkgNzAuODUxIDU1Ljc4MDFDNjQuMjMyMSA2Ny4yNDQzIDUyLjUyNzcgNzAuMTQ1NSAzOS41MDExIDYyLjYyNDdMMzEuNzI4NiA3Ni4wODdMMzEuNzIzNCA3Ni4wODYyQzI3LjQxODEgODMuNTMyNCAxNy44OTM3IDg2LjA4MjggMTAuNDQzNyA4MS43ODE3QzcuNDUzOTQgODAuMDU1NiA1LjI1MzIyIDc3LjQ4NzkgMy45NjY2NSA3NC41NTFMMy45NjA5NiA3NC41NTExQy00LjA3ODMyIDU1Ljc4MDQgMC4yMDA3NDUgMzQuMTE4NCAxMy44Nzc2IDIxLjgyNDJaIiBmaWxsPSJ1cmwoI3BhaW50MV9yYWRpYWxfNDMwM18xMjMwKSIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHBhdGggZD0iTTg1LjQzMjcgMTQuMjIzMUM4OC40NTI4IDE1Ljk2NjggOTAuNjY4NiAxOC41NjkgOTEuOTQ5NCAyMS41NDMzTDkxLjk1MzMgMjEuNTQ0NEM5OS45NDA2IDQwLjI5NDMgOTUuNjUzMyA2MS45MDY4IDgxLjk5ODMgNzQuMTgxNEM2Ni43NzI2IDg3Ljg2NzcgNDYuMTI1NyA4Ny44MTk2IDMyLjkyMDkgNzcuMDkyM0MyMC44OTQ1IDY3LjMyMjEgMTguNDA2MiA1MS42ODk3IDI1LjAyNDkgNDAuMjI1NkMzMS42NDM4IDI4Ljc2MTQgNDMuMzQ4MiAyNS44NjAxIDU2LjM3NDggMzMuMzgxTDY0LjE0MzQgMTkuOTI1NUw2NC4xNDgyIDE5LjkyNDlDNjguNDUxNiAxMi40NzM2IDc3Ljk4MDUgOS45MjA4NCA4NS40MzI3IDE0LjIyMzFaIiBmaWxsPSJ1cmwoI3BhaW50Ml9yYWRpYWxfNDMwM18xMjMwKSIvPgo8cGF0aCBkPSJNODUuNDMyNyAxNC4yMjMxQzg4LjQ1MjggMTUuOTY2OCA5MC42Njg2IDE4LjU2OSA5MS45NDk0IDIxLjU0MzNMOTEuOTUzMyAyMS41NDQ0Qzk5Ljk0MDYgNDAuMjk0MyA5NS42NTMzIDYxLjkwNjggODEuOTk4MyA3NC4xODE0QzY2Ljc3MjYgODcuODY3NyA0Ni4xMjU3IDg3LjgxOTYgMzIuOTIwOSA3Ny4wOTIzQzIwLjg5NDUgNjcuMzIyMSAxOC40MDYyIDUxLjY4OTcgMjUuMDI0OSA0MC4yMjU2QzMxLjY0MzggMjguNzYxNCA0My4zNDgyIDI1Ljg2MDEgNTYuMzc0OCAzMy4zODFMNjQuMTQzNCAxOS45MjU1TDY0LjE0ODIgMTkuOTI0OUM2OC40NTE2IDEyLjQ3MzYgNzcuOTgwNSA5LjkyMDg0IDg1LjQzMjcgMTQuMjIzMVoiIGZpbGw9InVybCgjcGFpbnQzX3JhZGlhbF80MzAzXzEyMzApIiBmaWxsLW9wYWNpdHk9IjAuOSIvPgo8cGF0aCBkPSJNMzkuNTA0MSA2Mi42MjYxQzUyLjUzMDcgNzAuMTQ2OSA2NC4yMzUyIDY3LjI0NTYgNzAuODU0MSA1NS43ODE0Qzc3LjI0ODggNDQuNzA1NSA3NS4xNDI2IDI5LjczODkgNjQuMTQ3IDE5LjkyNzFMNTYuMzc5MSAzMy4zODE0TDM5LjUwNDEgNjIuNjI2MVoiIGZpbGw9InVybCgjcGFpbnQ0X3JhZGlhbF80MzAzXzEyMzApIi8+CjxwYXRoIGQ9Ik01Ni4zNzk0IDMzLjM4MTVDNDMuMzUyOCAyNS44NjA3IDMxLjY0ODIgMjguNzYyIDI1LjAyOTQgNDAuMjI2MkMxOC42MzQ3IDUxLjMwMjEgMjAuNzQwOSA2Ni4yNjg3IDMxLjczNjQgNzYuMDgwNkwzOS41MDQzIDYyLjYyNjJMNTYuMzc5NCAzMy4zODE1WiIgZmlsbD0idXJsKCNwYWludDVfcmFkaWFsXzQzMDNfMTIzMCkiLz4KPHBhdGggZD0iTTMzLjMyMTUgNTYuNDQ1M0MzNy45ODM3IDY0LjUyMDQgNDguMzA5NCA2Ny4yODcyIDU2LjM4NDYgNjIuNjI1QzY0LjQ1OTggNTcuOTYyOCA2Ny4yMjY2IDQ3LjYzNzEgNjIuNTY0MyAzOS41NjE5QzU3LjkwMjEgMzEuNDg2NyA0Ny41NzY0IDI4LjcyIDM5LjUwMTMgMzMuMzgyMkMzMS40MjYxIDM4LjA0NDQgMjguNjU5MyA0OC4zNzAxIDMzLjMyMTUgNTYuNDQ1M1oiIGZpbGw9InVybCgjcGFpbnQ2X3JhZGlhbF80MzAzXzEyMzApIi8+CjwvZz4KPC9nPgo8L2c+CjxkZWZzPgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50MF9yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDQ2LjAwMDEgNDkuNDk5Nikgcm90YXRlKC0xNDguNzE3KSBzY2FsZSg0Ni4yMTk1IDQ3LjUzNTkpIj4KPHN0b3Agb2Zmc2V0PSIwLjQ2NTA4OCIgc3RvcC1jb2xvcj0iIzA5NDQyQSIvPgo8c3RvcCBvZmZzZXQ9IjAuNzAwODgiIHN0b3AtY29sb3I9IiMxMzZDNkMiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMjI5MThCIi8+CjwvcmFkaWFsR3JhZGllbnQ+CjxyYWRpYWxHcmFkaWVudCBpZD0icGFpbnQxX3JhZGlhbF80MzAzXzEyMzAiIGN4PSIwIiBjeT0iMCIgcj0iMSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGdyYWRpZW50VHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTAuMDAwMSAzMi40OTk2KSByb3RhdGUoMTIzLjU3KSBzY2FsZSg2Ni4wMDk1IDQ2LjU0OTgpIj4KPHN0b3Agb2Zmc2V0PSIwLjcxODcwNSIgc3RvcC1jb2xvcj0iIzFBN0Y3QyIgc3RvcC1vcGFjaXR5PSIwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE2QkJEQSIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50Ml9yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDUwLjQ5OTkgNDQuNTAwMSkgcm90YXRlKDMwLjc1KSBzY2FsZSg0NS45NjE4IDQ0LjUwOTUpIj4KPHN0b3Agb2Zmc2V0PSIwLjM1ODA5NyIgc3RvcC1jb2xvcj0iIzEzNkM2QyIvPgo8c3RvcCBvZmZzZXQ9IjAuNzg5NDc0IiBzdG9wLWNvbG9yPSIjNDJCODcwIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzc2RDQ1RSIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50M19yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VHJhbnNmb3JtPSJtYXRyaXgoNDIuNSAtMzYuMDAwMiAzMS4xODI0IDM2LjgxMjcgNDkuNDk5OCA1NS41MDAxKSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBvZmZzZXQ9IjAuNTgzMTY2IiBzdG9wLWNvbG9yPSIjNzZENDVFIiBzdG9wLW9wYWNpdHk9IjAiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjQzhGNUI3Ii8+CjwvcmFkaWFsR3JhZGllbnQ+CjxyYWRpYWxHcmFkaWVudCBpZD0icGFpbnQ0X3JhZGlhbF80MzAzXzEyMzAiIGN4PSIwIiBjeT0iMCIgcj0iMSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGdyYWRpZW50VHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDcuNSA0OCkgcm90YXRlKC01OC45MDQyKSBzY2FsZSgzMi42ODk4KSI+CjxzdG9wIG9mZnNldD0iMC40ODYyNjYiIHN0b3AtY29sb3I9IiMyMjkxOEIiLz4KPHN0b3Agb2Zmc2V0PSIwLjcyOTU5OSIgc3RvcC1jb2xvcj0iIzQyQjg3MCIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM0M0U1Q0EiLz4KPC9yYWRpYWxHcmFkaWVudD4KPHJhZGlhbEdyYWRpZW50IGlkPSJwYWludDVfcmFkaWFsXzQzMDNfMTIzMCIgY3g9IjAiIGN5PSIwIiByPSIxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg0Ny4zODMzIDQ5LjAwNzcpIHJvdGF0ZSgxMTkuODU5KSBzY2FsZSgzMS4xMzI4IDI5LjQwMzIpIj4KPHN0b3Agb2Zmc2V0PSIwLjQ1OTU1MyIgc3RvcC1jb2xvcj0iIzA4NDk0RSIvPgo8c3RvcCBvZmZzZXQ9IjAuNzQyMjQyIiBzdG9wLWNvbG9yPSIjMUE3RjdDIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzMwOUM2MSIvPgo8L3JhZGlhbEdyYWRpZW50Pgo8cmFkaWFsR3JhZGllbnQgaWQ9InBhaW50Nl9yYWRpYWxfNDMwM18xMjMwIiBjeD0iMCIgY3k9IjAiIHI9IjEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKDUyLjUgNDApIHJvdGF0ZSgxMjAuNzg0KSBzY2FsZSgyNy4zNTQyKSI+CjxzdG9wIHN0b3AtY29sb3I9IiNDOEY1QjciLz4KPHN0b3Agb2Zmc2V0PSIwLjI0NTgzIiBzdG9wLWNvbG9yPSIjOThGMEIwIi8+CjxzdG9wIG9mZnNldD0iMC42NDM5NjEiIHN0b3AtY29sb3I9IiM1MkQxN0MiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTE5RkM1Ii8+CjwvcmFkaWFsR3JhZGllbnQ+CjxjbGlwUGF0aCBpZD0iY2xpcDBfNDMwM18xMjMwIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8Y2xpcFBhdGggaWQ9ImNsaXAxXzQzMDNfMTIzMCI+CjxyZWN0IHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPGNsaXBQYXRoIGlkPSJjbGlwMl80MzAzXzEyMzAiPgo8cmVjdCB3aWR0aD0iOTUuOTk5OCIgaGVpZ2h0PSI5NiIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K"/>
 <div>
-<div class="platform-bar__title">Dataverse — Common data layer</div>
+<div class="platform-bar__title">Dataverse - Common data layer</div>
 <div class="platform-bar__desc">Shared tables, security, and business logic across the ecosystem</div>
 </div>
 </div>
 <div class="platform-bar platform-bar--connectors">
 <div>
-<div class="platform-bar__title">1,000+ Connectors — Epic, Cerner, claims systems, and more</div>
-<div class="platform-bar__desc">Bring healthcare data, workflows, and analytics into the same governed platform</div>
+<div class="platform-bar__title" data-swap="s13.connectorsTitle"></div>
+<div class="platform-bar__desc" data-swap="s13.connectorsDesc"></div>
 </div>
 </div>
 </div></div>
 <!-- SLIDE 14: Publishing & Governance -->
-<div class="slide" data-notes="Once your agent is built, you publish it where people work. Microsoft Teams and M365 Copilot are the headline channels. You can also embed on a patient portal or custom app. On governance: package everything into Solutions for clean dev to test to production movement. Agents respect Microsoft 365 identity — users only see what they are authorised to see. And different harnesses have different licensing: standard harness uses Copilot Studio licensing, GitHub Copilot harness uses consumption-based Copilot Credits.">
+<div class="slide" data-notes="Once your agent is built, you publish it where people work. Microsoft Teams and M365 Copilot are the headline channels. You can also embed on a patient portal or custom app. On governance: package everything into Solutions for clean dev to test to production movement. Agents respect Microsoft 365 identity - users only see what they are authorised to see. And different harnesses have different licensing: standard harness uses Copilot Studio licensing, GitHub Copilot harness uses consumption-based Copilot Credits.">
 <div class="slide__content">
 <h2>Publishing &amp; Governance</h2>
 <p>Build once, deploy where your teams and patients already work.</p>
@@ -857,11 +979,11 @@ body {
 <div style="display:grid; grid-template-columns:1fr; gap:8px;">
 <div style="background:var(--cp-surface-soft); border:1px solid var(--cp-border); border-radius:6px; padding:10px 14px; text-align:center;">
 <div style="font-weight:700; font-size:13px; color:var(--cp-text); margin-bottom:2px;">Microsoft Teams &amp; M365 Copilot</div>
-<div style="font-size:11px; color:var(--cp-text-muted);">For staff and internal teams</div>
+<div style="font-size:11px; color:var(--cp-text-muted);" data-swap="s14.teams"></div>
 </div>
 <div style="background:var(--cp-surface-soft); border:1px solid var(--cp-border); border-radius:6px; padding:10px 14px; text-align:center;">
 <div style="font-weight:700; font-size:13px; color:var(--cp-text); margin-bottom:2px;">Web Embed</div>
-<div style="font-size:11px; color:var(--cp-text-muted);">For patient portals</div>
+<div style="font-size:11px; color:var(--cp-text-muted);" data-swap="s14.web"></div>
 </div>
 <div style="background:var(--cp-surface-soft); border:1px solid var(--cp-border); border-radius:6px; padding:10px 14px; text-align:center;">
 <div style="font-weight:700; font-size:13px; color:var(--cp-text); margin-bottom:2px;">Custom Apps</div>
@@ -911,24 +1033,24 @@ body {
 </div>
 </div>
 <!-- SLIDE 15: Resources -->
-<div class="slide" data-notes="Here are your next steps. Agent Academy has two hands-on learning paths — one for each harness. The standard harness path teaches topic-based authoring. The GitHub Copilot harness path teaches instruction-driven, reasoning-first agents. The Microsoft Learn harnesses overview doc is the official comparison. And Copilot Developer Camp has additional labs including Agent Builder.">
+<div class="slide" data-notes="Here are your next steps. Agent Academy has two hands-on learning paths - one for each harness. The standard harness path teaches topic-based authoring. The GitHub Copilot harness path teaches instruction-driven, reasoning-first agents. The Microsoft Learn harnesses overview doc is the official comparison. And Copilot Developer Camp has additional labs including Agent Builder.">
 <div class="slide__content">
 <h2>Resources &amp; Next Steps</h2>
 <p>Hands-on paths to keep building.</p>
 <div class="resource-tiles">
 <a class="resource-tile" href="https://microsoft.github.io/agent-academy/recruit/" target="_blank">
 <div class="resource-tile__icon">📚</div>
-<div class="resource-tile__title">Agent Academy — Standard Harness</div>
+<div class="resource-tile__title">Agent Academy - Standard Harness</div>
 <div class="resource-tile__desc">Recruit course: 13 missions covering topic-based authoring, Adaptive Cards, agent flows, and publishing</div>
 </a>
 <a class="resource-tile" href="https://microsoft.github.io/agent-academy/recruit-nextgen/" target="_blank">
 <div class="resource-tile__icon">🧠</div>
-<div class="resource-tile__title">Agent Academy — GitHub Copilot Harness</div>
+<div class="resource-tile__title">Agent Academy - GitHub Copilot Harness</div>
 <div class="resource-tile__desc">Recruit NextGen: 10 missions covering instruction-driven agents, tools, skills, workflows, and publishing</div>
 </a>
 <a class="resource-tile" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview" target="_blank">
 <div class="resource-tile__icon">📖</div>
-<div class="resource-tile__title">Choose a Harness — Microsoft Learn</div>
+<div class="resource-tile__title">Choose a Harness - Microsoft Learn</div>
 <div class="resource-tile__desc">Official documentation comparing the GitHub Copilot, standard, and Copilot chat harnesses</div>
 </a>
 <a class="resource-tile" href="https://aka.ms/copilot-camp" target="_blank">
@@ -957,64 +1079,483 @@ body {
     <strong>Navigation</strong><br>
     <kbd>←</kbd> <kbd>→</kbd> Previous / Next<br>
     <kbd>Space</kbd> Next slide<br>
+    Scroll wheel up / down<br>
+    <kbd>O</kbd> Slide overview<br>
     <kbd>N</kbd> Toggle presenter notes<br>
+    <kbd>T</kbd> Toggle light / dark<br>
+    <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> Switch audience<br>
     <kbd>Home</kbd> / <kbd>End</kbd> First / Last<br>
     Click left/right edges or swipe
   </div>
 </div>
+<!-- Slide overview -->
+<div aria-hidden="true" class="overview" id="overview">
+<div class="overview__header">
+<h3>All slides</h3>
+<span class="overview__hint">Click a slide to jump · <kbd>Esc</kbd> to close</span>
+</div>
+<div class="overview__grid" id="overviewGrid"></div>
+</div>
+<!-- Scroll hint -->
+<div class="scroll-hint" id="scrollHint">
+<span>Scroll or press →</span>
+<span class="scroll-hint__chev">⌄</span>
+</div>
 <!-- Controls -->
-<div class="progress"><div class="progress__fill" id="progressFill"></div></div>
+<div class="progress" id="progressBar"><div class="progress__fill" id="progressFill"></div></div>
 <div class="controls">
-<span class="controls__counter" id="slideCounter">1 / 16</span>
-<span class="controls__hint">← → keys · N for notes</span>
+<span class="controls__counter" id="slideCounter">1 / 17</span>
+<span class="controls__nav">
+<button aria-label="Previous slide" class="nav-btn" id="prevBtn" type="button">‹</button>
+<button aria-label="Next slide" class="nav-btn" id="nextBtn" type="button">›</button>
+</span>
+<span class="controls__hint">scroll · ← → · O overview</span>
 </div>
 <div class="notes" id="presenterNotes">
 <div class="notes__label">Presenter Notes</div>
 <div id="notesText"></div>
 </div>
 <script>
-const slides = document.querySelectorAll('.slide');
+const AUDIENCES = ['provider', 'payer', 'medtech'];
+
+const CONTENT = {
+  provider: {
+    'title.short': 'Provider',
+    's2.knows': "Clinical protocols, order sets, care pathways - grounded in your health system's own documentation, not generic web knowledge",
+    's2.acts': 'Places referral orders, books follow-ups, updates the chart - real work, not just answers',
+    's2.context': 'Remembers the conversation across turns - critical during patient intake or a multi-step discharge plan',
+    's2.lowcode': 'Drag-and-drop - clinical informaticists and revenue cycle teams build without engineering',
+    's3.ask': '"Which order set applies here?"',
+    's3.retrieve': 'Searches clinical protocol library',
+    's4.connectors': '<strong>1,000+ connectors</strong> for EHR-adjacent systems, scheduling, revenue cycle, and CRMs',
+    's4.enterprise': '<strong>Enterprise-grade</strong> for referrals, patient access, and care coordination',
+    's5.chat': 'Clinical policy and guideline Q&amp;A for care teams',
+    's5.standard': 'Patient access agent with structured scheduling paths',
+    's5.github': 'Referral workup: reads chart notes, checks specialist criteria, routes exceptions',
+    's6.knowledge': 'Order sets, clinical protocols, payer contracts',
+    's6.tools': 'Scheduling API, referral routing, chart updates',
+    's6.instructions': 'Tone, HIPAA boundaries, escalation rules',
+    's6.exampleLabel': 'Example: Patient Access Agent',
+    's6.exampleBody': 'Connected to the scheduling system and referral Dataverse tables. Topic: "Book a follow-up." Instructions: "Professional tone. Never disclose PHI to unauthorised parties. Escalate after two failed lookups."',
+    's7.ask': '"When is my follow-up?"',
+    's7.topic': 'Matches "Appointments"',
+    's7.instructions': 'HIPAA-conscious tone',
+    's7.knowledge': 'Queries scheduling records',
+    's7.tools': 'Calls scheduling API',
+    's7.response': 'Time + prep instructions',
+    's8.knowledge': 'Clinical guidelines, care pathways, patient context - memory retains useful information across sessions.',
+    's8.model': 'Choose the right LLM - fast models for chat, reasoning models for complex clinical decision support.',
+    's8.connected': 'Delegate to specialists - benefits check, pharmacy, scheduling - compose a team, not a monolith.',
+    's8.workflows': 'Deterministic steps that must run consistently - send the referral, trigger the order, update the chart.',
+    's9.goalLabel': 'Complete referral workup',
+    's9.goalDesc': 'Review specialist criteria',
+    's9.planDesc': 'What records are needed?',
+    's9.actDesc': 'Chart notes + specialist rules',
+    's9.observeDesc': 'Missing imaging report',
+    's9.replanLabel': 'Request imaging',
+    's11.lead': 'Map the harness to the provider scenario.',
+    's11.chat': '<strong>Scenario:</strong> Clinical guideline and policy FAQ grounded in your compliance documents',
+    's11.standard': '<strong>Scenario:</strong> Patient access agent with structured scheduling and registration paths',
+    's11.github': '<strong>Scenario:</strong> Referral and care coordination - reads chart notes, checks criteria, requests missing records, routes exceptions',
+    's13.pages': 'Patient portals',
+    's13.connectorsTitle': '1,000+ Connectors - EHR-adjacent systems, scheduling, and revenue cycle',
+    's13.connectorsDesc': 'Bring clinical and operational data, workflows, and analytics into the same governed platform',
+    's14.teams': 'For clinicians and internal teams',
+    's14.web': 'For patient portals',
+    'grid.title': 'Provider Scenarios',
+    'grid.subtitle': 'Where health systems are getting value first - and the harness that fits each one.',
+    'grid.guardrail': '<strong>Guardrails throughout:</strong> HIPAA minimum-necessary access, role-based permissions inherited from Microsoft 365 identity, and a full audit trail on every action.',
+    scenarios: [
+      { icon: '\uD83E\uDE7A', title: 'Care Coordination &amp; Referrals', desc: 'Route referrals, chase missing records, and keep the loop closed across specialties.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83C\uDFE5', title: 'Patient Access &amp; Scheduling', desc: 'Registration, insurance capture, and self-service booking on structured paths.', harness: 'Standard harness' },
+      { icon: '\uD83D\uDCB5', title: 'Revenue Cycle &amp; Denials', desc: 'Read the denial, pull supporting documentation, and draft the appeal packet.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83D\uDCCB', title: 'Clinical Documentation Support', desc: 'Surface the right order set, protocol, or policy at the point of need.', harness: 'Copilot chat harness' },
+      { icon: '\uD83C\uDF93', title: 'Workforce &amp; Credentialing', desc: 'Verify credentials, track expirations, and onboard new clinicians.', harness: 'Standard harness' },
+      { icon: '\uD83D\uDECF\uFE0F', title: 'Capacity &amp; Discharge Planning', desc: 'Summarise barriers to discharge and coordinate next-site-of-care handoffs.', harness: 'GitHub Copilot harness' }
+    ],
+    poll: [
+      { icon: '\uD83E\uDE7A', title: 'Referral Management', desc: 'Route and track referrals end to end' },
+      { icon: '\uD83C\uDFE5', title: 'Patient Intake &amp; Triage', desc: 'Streamline registration and initial assessment' },
+      { icon: '\uD83D\uDCB0', title: 'Revenue Cycle &amp; Denials', desc: 'Reduce denials and speed appeals' },
+      { icon: '\uD83D\uDCCB', title: 'Staff Credentialing', desc: 'Automate verification and clinician onboarding' },
+      { icon: '\uD83E\uDD1D', title: 'Care Coordination', desc: 'Discharge planning and cross-team handoffs' }
+    ],
+    'n2': 'An agent is not a generic chatbot. For a health system it is grounded in your order sets, protocols, and payer contracts, and it can act - place a referral order, book a follow-up, update the chart. Low-code means clinical informaticists and revenue cycle teams build it, not just engineering.',
+    'n6': 'Knowledge is your protocol library and payer contracts. Tools are the actions - the scheduling API, referral routing, chart updates. Topics are conversation entry points matched by intent. Instructions set tone, HIPAA boundaries, and escalation rules.',
+    'n7': 'A patient asks when their follow-up is. The AI matches the Appointments topic, instructions enforce a HIPAA-conscious tone, knowledge queries scheduling records, tools call the scheduling API, and the response comes back with prep instructions.',
+    'n9': 'The goal is to complete a referral workup. The agent plans what records it needs, retrieves chart notes and checks specialist criteria, observes that the imaging report is missing, then replans to request it. No scripted branch drew that path.',
+    'nGrid': 'Six provider scenarios. Point out that three of the six land on the GitHub Copilot harness because they involve reading unstructured documentation and deciding what to do next. Ask which one is closest to their current backlog.',
+    'nPoll': 'Ask which of these provider scenarios would have the biggest impact. Give them 30 seconds, then discuss. Their answer tells you where to spend the rest of the session.'
+  },
+  payer: {
+    'title.short': 'Payer',
+    's2.knows': "Benefit plans, medical policy, formularies - grounded in your plan's own documentation, not generic web knowledge",
+    's2.acts': 'Intakes prior authorisations, explains claim edits, updates member records - real work, not just answers',
+    's2.context': 'Remembers the conversation across turns - critical during an appeal or multi-step claims resolution',
+    's2.lowcode': 'Drag-and-drop - policy, operations, and member services teams build without engineering',
+    's3.ask': '"Formulary status of Drug X?"',
+    's3.retrieve': 'Searches the plan formulary database',
+    's4.connectors': '<strong>1,000+ connectors</strong> for claims platforms, care management, CRMs, and member systems',
+    's4.enterprise': '<strong>Enterprise-grade</strong> for prior auth, claims, and appeals',
+    's5.chat': 'Benefit and medical policy Q&amp;A for service reps',
+    's5.standard': 'Member billing inquiry with structured paths',
+    's5.github': 'Prior auth: reads clinical docs, checks medical policy, routes exceptions',
+    's6.knowledge': 'Formularies, medical policy, benefit plans',
+    's6.tools': 'Claims API, auth intake, member record updates',
+    's6.instructions': 'Tone, HIPAA boundaries, escalation rules',
+    's6.exampleLabel': 'Example: Member Billing Agent',
+    's6.exampleBody': 'Connected to the claims SharePoint and billing Dataverse. Topic: "Check claim status." Instructions: "Professional tone. Never disclose PHI to unauthorised parties. Escalate after two failed lookups."',
+    's7.ask': '"What\'s my claim status?"',
+    's7.topic': 'Matches "Check Claim"',
+    's7.instructions': 'HIPAA-conscious tone',
+    's7.knowledge': 'Queries claims database',
+    's7.tools': 'Calls claims API',
+    's7.response': 'Status + next steps',
+    's8.knowledge': 'Medical policy, formularies, member context - memory retains useful information across sessions.',
+    's8.model': 'Choose the right LLM - fast models for chat, reasoning models for complex medical necessity review.',
+    's8.connected': 'Delegate to specialists - eligibility, pharmacy, appeals - compose a team, not a monolith.',
+    's8.workflows': 'Deterministic steps that must run consistently - issue the determination, trigger the appeal, update the record.',
+    's9.goalLabel': 'Process prior auth',
+    's9.goalDesc': 'Review medical necessity',
+    's9.planDesc': 'What docs are needed?',
+    's9.actDesc': 'Clinical records + policy criteria',
+    's9.observeDesc': 'Missing lab results',
+    's9.replanLabel': 'Request missing docs',
+    's11.lead': 'Map the harness to the payer scenario.',
+    's11.chat': '<strong>Scenario:</strong> Member benefits FAQ grounded in plan and compliance documents',
+    's11.standard': '<strong>Scenario:</strong> Member billing inquiry agent with structured paths and claim status lookups',
+    's11.github': '<strong>Scenario:</strong> Prior auth automation - reads clinical docs, applies medical policy, requests missing info, routes exceptions',
+    's13.pages': 'Member and provider portals',
+    's13.connectorsTitle': '1,000+ Connectors - claims platforms, care management, and CRMs',
+    's13.connectorsDesc': 'Bring claims, clinical, and member data, workflows, and analytics into the same governed platform',
+    's14.teams': 'For service reps and internal teams',
+    's14.web': 'For member and provider portals',
+    'grid.title': 'Payer Scenarios',
+    'grid.subtitle': 'Where health plans are getting value first - and the harness that fits each one.',
+    'grid.guardrail': '<strong>Guardrails throughout:</strong> HIPAA minimum-necessary access, human review on every adverse determination, and a full audit trail on every action.',
+    scenarios: [
+      { icon: '\uD83D\uDCDD', title: 'Prior Authorisation', desc: 'Read clinical documentation, apply medical policy, and route exceptions to a human reviewer.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83E\uDDFE', title: 'Claims Status &amp; Resolution', desc: 'Self-service status, edit explanations, and reprocessing requests.', harness: 'Standard harness' },
+      { icon: '\uD83D\uDCDE', title: 'Member Services', desc: 'Benefits, eligibility, network, and cost-share questions in plain language.', harness: 'Copilot chat harness' },
+      { icon: '\u2696\uFE0F', title: 'Appeals &amp; Grievances', desc: 'Assemble the case file, check timeliness clocks, and draft the determination letter.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83C\uDFE5', title: 'Provider Network Operations', desc: 'Roster updates, contract questions, and credentialing status for network providers.', harness: 'Standard harness' },
+      { icon: '\uD83E\uDE7A', title: 'Utilisation &amp; Care Management', desc: 'Summarise the case, surface gaps in care, and prep the care manager before outreach.', harness: 'GitHub Copilot harness' }
+    ],
+    poll: [
+      { icon: '\uD83D\uDCDD', title: 'Prior Auth Automation', desc: 'Reduce manual review and speed approvals' },
+      { icon: '\uD83E\uDDFE', title: 'Claims Status &amp; Resolution', desc: 'Self-service claim tracking for members and staff' },
+      { icon: '\uD83D\uDCDE', title: 'Member Services', desc: 'Benefits, eligibility, and network questions' },
+      { icon: '\u2696\uFE0F', title: 'Appeals &amp; Grievances', desc: 'Faster, better-documented case handling' },
+      { icon: '\uD83E\uDE7A', title: 'Utilisation &amp; Care Management', desc: 'Summarise cases and surface gaps in care' }
+    ],
+    'n2': 'An agent is not a generic chatbot. For a health plan it is grounded in your medical policy, benefit plans, and formularies, and it can act - intake a prior auth, explain a claim edit, update a member record. Policy and operations teams build it without engineering.',
+    'n6': 'Knowledge is your formularies, medical policy, and benefit plans. Tools are the actions - the claims API, auth intake, member record updates. Topics are conversation entry points matched by intent. Instructions set tone, HIPAA boundaries, and escalation rules.',
+    'n7': 'A member asks about their claim. The AI matches the Check Claim topic, instructions enforce a HIPAA-conscious tone, knowledge queries the claims database, tools call the claims API, and the response comes back with next steps.',
+    'n9': 'The goal is to process a prior auth. The agent plans what documentation it needs, retrieves clinical records and checks policy criteria, observes that lab results are missing, then replans to request them. Note that the determination itself still goes to a human reviewer.',
+    'nGrid': 'Six payer scenarios. Note that the reasoning-heavy ones - prior auth, appeals, care management - all sit on the GitHub Copilot harness because they involve reading unstructured clinical documentation. Ask which one is closest to their current backlog.',
+    'nPoll': 'Ask which of these payer scenarios would have the biggest impact. Give them 30 seconds, then discuss. Their answer tells you where to spend the rest of the session.'
+  },
+  medtech: {
+    'title.short': 'MedTech &amp; Pharma',
+    's2.knows': 'IFUs, SOPs, service manuals, approved labelling and MLR-cleared content - grounded in your controlled documents, not generic web knowledge',
+    's2.acts': 'Logs a product complaint, opens a CAPA task, raises an RMA, updates the CRM - real work, not just answers',
+    's2.context': 'Remembers the conversation across turns - critical during complaint intake or a multi-step field service call',
+    's2.lowcode': 'Drag-and-drop - quality, regulatory, medical, and commercial ops teams build without engineering',
+    's3.ask': '"Which IFU revision is current?"',
+    's3.retrieve': 'Searches the controlled document repository',
+    's4.connectors': '<strong>1,000+ connectors</strong> for Veeva-adjacent systems, ERP, QMS, LIMS, and CRMs',
+    's4.enterprise': '<strong>Enterprise-grade</strong> for complaint handling, field service, and medical information',
+    's5.chat': 'SOP and approved-content Q&amp;A for commercial and medical teams',
+    's5.standard': 'Product complaint intake with structured questions',
+    's5.github': 'Complaint triage: reads the report, assesses reportability, routes to quality',
+    's6.knowledge': 'IFUs, SOPs, labelling, MLR-approved content',
+    's6.tools': 'Complaint log, RMA creation, CRM and QMS updates',
+    's6.instructions': 'Tone, GxP and promotional-claim boundaries, escalation rules',
+    's6.exampleLabel': 'Example: Product Complaint Intake Agent',
+    's6.exampleBody': 'Connected to the QMS document library and complaint Dataverse tables. Topic: "Report a device issue." Instructions: "Neutral, non-diagnostic tone. Never speculate on causality or make off-label claims. Escalate any potential serious injury immediately."',
+    's7.ask': '"My analyser shows error 42"',
+    's7.topic': 'Matches "Device Issue"',
+    's7.instructions': 'GxP-conscious, non-diagnostic tone',
+    's7.knowledge': 'Queries service manual + known-issue KB',
+    's7.tools': 'Logs the complaint record',
+    's7.response': 'Corrective steps + case number',
+    's8.knowledge': 'IFUs, safety data, product and account context - memory retains useful information across sessions.',
+    's8.model': 'Choose the right LLM - fast models for chat, reasoning models for reportability and safety assessment.',
+    's8.connected': 'Delegate to specialists - regulatory, quality, medical information - compose a team, not a monolith.',
+    's8.workflows': 'Deterministic steps that must run consistently - file the complaint, trigger the CAPA, update the case.',
+    's9.goalLabel': 'Triage product complaint',
+    's9.goalDesc': 'Assess reportability',
+    's9.planDesc': 'What evidence is needed?',
+    's9.actDesc': 'Device history + complaint file',
+    's9.observeDesc': 'Missing lot and serial number',
+    's9.replanLabel': 'Request device details',
+    's11.lead': 'Map the harness to the MedTech and pharma scenario.',
+    's11.chat': '<strong>Scenario:</strong> SOP and approved-content FAQ grounded in your controlled documents',
+    's11.standard': '<strong>Scenario:</strong> Complaint intake agent with structured product, lot, and event questions',
+    's11.github': '<strong>Scenario:</strong> Complaint-to-CAPA triage - reads the report, assesses reportability, drafts the investigation, routes exceptions',
+    's13.pages': 'HCP and partner portals',
+    's13.connectorsTitle': '1,000+ Connectors - Veeva, SAP, QMS, LIMS, and CRMs',
+    's13.connectorsDesc': 'Bring commercial, quality, and clinical data, workflows, and analytics into the same governed platform',
+    's14.teams': 'For field, medical, and quality teams',
+    's14.web': 'For HCP and partner portals',
+    'grid.title': 'MedTech &amp; Pharma Scenarios',
+    'grid.subtitle': 'Where life sciences organisations are getting value first - and the harness that fits each one.',
+    'grid.guardrail': '<strong>Guardrails throughout:</strong> GxP-validated environments, 21 CFR Part 11 electronic records and signatures, MLR-approved source content only, and vigilance reporting clocks enforced by workflow - never by the model.',
+    scenarios: [
+      { icon: '\uD83D\uDEE1\uFE0F', title: 'Complaint Intake &amp; Reportability', desc: 'Capture the event, assess MDR and vigilance reportability, and open the QMS record within the clock.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83D\uDD27', title: 'Field Service &amp; Install Base', desc: 'Troubleshoot from service manuals, check parts availability, and raise the RMA.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83D\uDCD1', title: 'Medical Information &amp; MSL Support', desc: 'On-label, referenced responses to HCP enquiries drawn only from approved content.', harness: 'Copilot chat harness' },
+      { icon: '\uD83E\uDDED', title: 'MLR Pre-Check', desc: 'Screen promotional content against the claims library and flag issues before formal review.', harness: 'Standard harness' },
+      { icon: '\uD83E\uDDEA', title: 'Clinical Trial &amp; Site Support', desc: 'Protocol Q&amp;A, site feasibility screening, and investigator query handling.', harness: 'GitHub Copilot harness' },
+      { icon: '\uD83D\uDE9A', title: 'Supply, Recall &amp; Patient Support', desc: 'Field action notifications, consignment queries, and copay or hub eligibility.', harness: 'Standard harness' }
+    ],
+    poll: [
+      { icon: '\uD83D\uDEE1\uFE0F', title: 'Complaint &amp; Reportability', desc: 'Triage complaints and flag MDR candidates' },
+      { icon: '\uD83D\uDD27', title: 'Field Service Support', desc: 'Guide engineers through install-base troubleshooting' },
+      { icon: '\uD83D\uDCD1', title: 'Medical Information', desc: 'On-label responses for HCP enquiries' },
+      { icon: '\uD83E\uDDEA', title: 'Trial &amp; Site Support', desc: 'Protocol Q&amp;A and investigator queries' },
+      { icon: '\uD83E\uDDED', title: 'MLR Pre-Check', desc: 'Screen content before formal review' }
+    ],
+    'n2': 'An agent is not a generic chatbot. In life sciences it is grounded in your controlled documents - IFUs, SOPs, approved labelling, MLR-cleared content - and it can act: log a complaint, open a CAPA, raise an RMA. Quality, regulatory, and commercial ops teams build it without engineering.',
+    'n6': 'Knowledge is your controlled document set. Tools are the actions - the complaint log, RMA creation, QMS and CRM updates. Topics are conversation entry points matched by intent. Instructions carry the heavy lifting here: neutral non-diagnostic tone, no off-label claims, no speculation on causality.',
+    'n7': 'A customer reports an analyser error. The AI matches the Device Issue topic, instructions enforce a neutral non-diagnostic tone, knowledge queries the service manual and known-issue base, tools log the complaint record, and the response comes back with corrective steps and a case number.',
+    'n9': 'The goal is to triage a product complaint. The agent plans what evidence it needs, pulls device history and the complaint file, observes the lot and serial number are missing, then replans to request them. Reportability determination stays with a qualified human - the agent assembles the file and starts the clock.',
+    'nGrid': 'Six MedTech and pharma scenarios. Two things this audience will ask about immediately: validation and MLR. Point at the guardrail line - approved content only, Part 11 records, and reporting clocks enforced by workflow rather than by the model.',
+    'nPoll': 'Ask which of these life sciences scenarios would have the biggest impact. Give them 30 seconds, then discuss. Their answer tells you where to spend the rest of the session.'
+  }
+};
+
+const slides = Array.from(document.querySelectorAll('.slide'));
 const totalSlides = slides.length;
 let currentSlide = 0;
+let audience = 'provider';
+
+const progressFill = document.getElementById('progressFill');
+const slideCounter = document.getElementById('slideCounter');
+const notesText = document.getElementById('notesText');
+const presenterNotes = document.getElementById('presenterNotes');
+const overview = document.getElementById('overview');
+const overviewGrid = document.getElementById('overviewGrid');
+const scrollHint = document.getElementById('scrollHint');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const themeBtn = document.getElementById('themeBtn');
+
+/* ---------- Theme ---------- */
+
+function applyTheme(next, persist) {
+  document.documentElement.setAttribute('data-theme', next);
+  themeBtn.setAttribute('aria-pressed', String(next === 'dark'));
+  themeBtn.title = next === 'dark' ? 'Switch to light theme (T)' : 'Switch to dark theme (T)';
+  if (!persist) return;
+  try { localStorage.setItem('cpTheme', next); } catch (e) { /* storage unavailable */ }
+  const url = new URL(window.location.href);
+  url.searchParams.set('theme', next);
+  url.searchParams.delete('scoutTheme');
+  history.replaceState(null, '', url);
+}
+
+function toggleTheme() {
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
+}
+
+themeBtn.addEventListener('click', toggleTheme);
+
+/* ---------- Audience ---------- */
+
+function applyAudience(next) {
+  if (!AUDIENCES.includes(next)) return;
+  audience = next;
+  const data = CONTENT[audience];
+
+  document.documentElement.setAttribute('data-audience', audience);
+  document.querySelectorAll('.audience-btn').forEach((btn) => {
+    btn.setAttribute('aria-pressed', String(btn.dataset.audience === audience));
+  });
+
+  document.querySelectorAll('[data-swap]').forEach((el) => {
+    const value = data[el.dataset.swap];
+    if (value !== undefined) el.innerHTML = value;
+  });
+
+  document.getElementById('scenarioGrid').innerHTML = data.scenarios.map((s) => `
+    <div class="scenario-card">
+      <div class="scenario-card__icon">${s.icon}</div>
+      <div class="scenario-card__title">${s.title}</div>
+      <div class="scenario-card__desc">${s.desc}</div>
+      <div class="scenario-card__harness">${s.harness}</div>
+    </div>`).join('');
+
+  const pollItems = data.poll.concat([{ icon: '\uD83D\uDCAC', title: 'Something Else', desc: 'Drop it in the chat!' }]);
+  document.getElementById('pollOptions').innerHTML = pollItems.map((p) => `
+    <div class="poll-option">
+      <div class="poll-option__icon">${p.icon}</div>
+      <div class="poll-option__title">${p.title}</div>
+      <div class="poll-option__desc">${p.desc}</div>
+    </div>`).join('');
+
+  try { localStorage.setItem('cpAudience', audience); } catch (e) { /* storage unavailable */ }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set('audience', audience);
+  history.replaceState(null, '', url);
+
+  renderNotes();
+  buildOverview();
+}
+
+function currentNotes(slide) {
+  const key = slide.getAttribute('data-notes-key');
+  return (key && CONTENT[audience][key]) || slide.getAttribute('data-notes') || '';
+}
+
+function renderNotes() {
+  notesText.textContent = currentNotes(slides[currentSlide]);
+}
+
+/* ---------- Slides ---------- */
+
+function slideTitle(slide, i) {
+  if (i === 0) return 'Title';
+  const swapped = slide.querySelector('h2[data-swap]');
+  if (swapped) return swapped.textContent;
+  const h2 = slide.querySelector('h2');
+  if (h2) return h2.textContent;
+  const h1 = slide.querySelector('h1');
+  return h1 ? h1.textContent : 'Slide ' + (i + 1);
+}
+
+function buildOverview() {
+  overviewGrid.innerHTML = slides.map((slide, i) => `
+    <button class="overview__item${i === currentSlide ? ' current' : ''}" data-index="${i}" type="button">
+      <span class="overview__item-num">${i + 1}</span>
+      <span class="overview__item-title"></span>
+    </button>`).join('');
+  overviewGrid.querySelectorAll('.overview__item').forEach((btn, i) => {
+    btn.querySelector('.overview__item-title').textContent = slideTitle(slides[i], i);
+  });
+}
 
 function showSlide(n) {
   if (n < 0 || n >= totalSlides) return;
   slides[currentSlide].classList.remove('active');
   currentSlide = n;
   slides[currentSlide].classList.add('active');
-  const pct = ((currentSlide + 1) / totalSlides) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('slideCounter').textContent = (currentSlide + 1) + ' / ' + totalSlides;
-  const notes = slides[currentSlide].getAttribute('data-notes') || '';
-  document.getElementById('notesText').textContent = notes;
+
+  progressFill.style.transform = 'scaleX(' + ((currentSlide + 1) / totalSlides) + ')';
+  slideCounter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.disabled = currentSlide === totalSlides - 1;
+  scrollHint.classList.toggle('hidden', currentSlide !== 0);
+  renderNotes();
+
+  overviewGrid.querySelectorAll('.overview__item').forEach((btn, i) => {
+    btn.classList.toggle('current', i === currentSlide);
+  });
 }
 
 function nextSlide() { showSlide(currentSlide + 1); }
 function prevSlide() { showSlide(currentSlide - 1); }
 
+function toggleOverview(force) {
+  const open = force !== undefined ? force : !overview.classList.contains('visible');
+  overview.classList.toggle('visible', open);
+  overview.setAttribute('aria-hidden', String(!open));
+}
+
+/* ---------- Input ---------- */
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevSlide(); }
-  if (e.key === 'n' || e.key === 'N') { document.getElementById('presenterNotes').classList.toggle('visible'); }
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (overview.classList.contains('visible') && (e.key === 'Escape' || e.key === 'o' || e.key === 'O')) {
+    e.preventDefault(); toggleOverview(false); return;
+  }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); prevSlide(); }
+  if (e.key === 'n' || e.key === 'N') { presenterNotes.classList.toggle('visible'); }
+  if (e.key === 't' || e.key === 'T') { toggleTheme(); }
+  if (e.key === 'o' || e.key === 'O') { e.preventDefault(); toggleOverview(true); }
   if (e.key === 'Home') { e.preventDefault(); showSlide(0); }
   if (e.key === 'End') { e.preventDefault(); showSlide(totalSlides - 1); }
+  if (e.key === '1') applyAudience('provider');
+  if (e.key === '2') applyAudience('payer');
+  if (e.key === '3') applyAudience('medtech');
+});
+
+document.querySelectorAll('.audience-btn').forEach((btn) => {
+  btn.addEventListener('click', () => applyAudience(btn.dataset.audience));
+});
+
+prevBtn.addEventListener('click', prevSlide);
+nextBtn.addEventListener('click', nextSlide);
+
+document.getElementById('progressBar').addEventListener('click', (e) => {
+  const ratio = e.clientX / window.innerWidth;
+  showSlide(Math.min(totalSlides - 1, Math.floor(ratio * totalSlides)));
+});
+
+overviewGrid.addEventListener('click', (e) => {
+  const item = e.target.closest('.overview__item');
+  if (!item) return;
+  showSlide(Number(item.dataset.index));
+  toggleOverview(false);
 });
 
 document.querySelector('.deck').addEventListener('click', (e) => {
-  if (e.target.closest('.controls') || e.target.closest('.notes') || e.target.closest('.poll-option') || e.target.closest('a')) return;
+  if (e.target.closest('.controls, .notes, .poll-option, a, button')) return;
   const x = e.clientX;
   const w = window.innerWidth;
   if (x < w * 0.3) prevSlide();
   else if (x > w * 0.7) nextSlide();
 });
 
+document.addEventListener('click', (e) => {
+  const option = e.target.closest('.poll-option');
+  if (option) option.classList.toggle('selected');
+});
+
+/* Wheel: accumulate delta so trackpad inertia does not skip slides. */
+let wheelAccum = 0;
+let wheelLocked = false;
+let wheelIdleTimer;
+const WHEEL_THRESHOLD = 60;
+
+window.addEventListener('wheel', (e) => {
+  if (overview.classList.contains('visible')) return;
+  if (e.target.closest('.notes')) return;
+
+  const scrollable = e.target.closest('.slide__content');
+  if (scrollable && scrollable.scrollHeight > scrollable.clientHeight + 2) return;
+
+  e.preventDefault();
+  clearTimeout(wheelIdleTimer);
+  wheelIdleTimer = setTimeout(() => { wheelAccum = 0; }, 180);
+
+  if (wheelLocked) return;
+  wheelAccum += e.deltaY;
+  if (Math.abs(wheelAccum) < WHEEL_THRESHOLD) return;
+
+  wheelAccum > 0 ? nextSlide() : prevSlide();
+  wheelAccum = 0;
+  wheelLocked = true;
+  setTimeout(() => { wheelLocked = false; }, 600);
+}, { passive: false });
+
 let touchStartX = 0;
-document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
 document.addEventListener('touchend', (e) => {
   const diff = e.changedTouches[0].clientX - touchStartX;
   if (Math.abs(diff) > 50) { diff > 0 ? prevSlide() : nextSlide(); }
 });
 
+/* ---------- Boot ---------- */
+
+let initial = new URLSearchParams(window.location.search).get('audience');
+if (!AUDIENCES.includes(initial)) {
+  try { initial = localStorage.getItem('cpAudience'); } catch (e) { initial = null; }
+}
+applyTheme(document.documentElement.getAttribute('data-theme'), false);
+applyAudience(AUDIENCES.includes(initial) ? initial : 'provider');
 showSlide(0);
 </script>
 </body>
